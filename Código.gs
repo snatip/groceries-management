@@ -2,6 +2,7 @@
 const RESUMEN_SHEET = "Resumen";
 const DATOS_SHEET = "Datos";
 const GRUPOS_SHEET = "Grupos";
+const HORARIOS_SHEET = "Horarios";
 
 // Cache para evitar múltiples lecturas de la hoja Datos
 let personasCache = null;
@@ -468,7 +469,7 @@ function doGet(e) {
  * Devuelve los nombres de todas las hojas de compra.
  */
 function getSheetNames() {
-  const excludeSheets = [RESUMEN_SHEET, DATOS_SHEET, GRUPOS_SHEET];
+  const excludeSheets = [RESUMEN_SHEET, DATOS_SHEET, GRUPOS_SHEET, HORARIOS_SHEET];
   return SpreadsheetApp.getActiveSpreadsheet()
     .getSheets()
     .map(s => s.getName())
@@ -969,5 +970,318 @@ function crearCompraDesdeApp(nombreCompra, productos, asignaciones) {
     
   } catch (error) {
     return { success: false, message: error.message };
+  }
+}
+
+// === FUNCIONES PARA GESTIÓN DE HORARIOS Y ASISTENCIA ===
+
+/**
+ * Obtiene o crea la hoja de horarios
+ */
+function getHojaHorarios() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let horariosSheet = ss.getSheetByName(HORARIOS_SHEET);
+  
+  if (!horariosSheet) {
+    // Crear la hoja si no existe
+    horariosSheet = ss.insertSheet(HORARIOS_SHEET);
+    
+    // Configurar encabezados
+    const headers = [
+      "Nombre", 
+      "Asistencia", 
+      "Trayecto1_Salida", 
+      "Trayecto1_Llegada", 
+      "Trayecto1_Transporte",
+      "Trayecto2_Salida", 
+      "Trayecto2_Llegada", 
+      "Trayecto2_Transporte",
+      "Trayecto3_Salida", 
+      "Trayecto3_Llegada", 
+      "Trayecto3_Transporte",
+      "Trayecto4_Salida", 
+      "Trayecto4_Llegada", 
+      "Trayecto4_Transporte",
+      "Notas"
+    ];
+    
+    horariosSheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    horariosSheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
+    horariosSheet.getRange(1, 1, 1, headers.length).setBackground("#4285f4");
+    horariosSheet.getRange(1, 1, 1, headers.length).setFontColor("white");
+    horariosSheet.autoResizeColumns(1, headers.length);
+  }
+  
+  return horariosSheet;
+}
+
+/**
+ * Guarda la confirmación de asistencia de una persona
+ */
+function saveAsistencia(nombre, asistio) {
+  try {
+    const horariosSheet = getHojaHorarios();
+    const data = horariosSheet.getDataRange().getValues();
+    
+    // Buscar si la persona ya existe en la hoja
+    let personaRow = -1;
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === nombre) {
+        personaRow = i;
+        break;
+      }
+    }
+    
+    if (personaRow === -1) {
+      // Añadir nueva fila para la persona
+      const config = cargarConfiguracionPersonas();
+      const personaConfig = config.listaPersonas.find(p => p.nombre === nombre);
+      
+      if (personaConfig) {
+        const newRow = [nombre, asistio];
+        // Añadir celdas vacías para los trayectos y notas
+        for (let i = 0; i < 13; i++) {
+          newRow.push("");
+        }
+        horariosSheet.appendRow(newRow);
+      } else {
+        return { success: false, message: "Persona no encontrada en la configuración" };
+      }
+    } else {
+      // Actualizar asistencia existente
+      horariosSheet.getRange(personaRow + 1, 2).setValue(asistio);
+    }
+    
+    return { success: true, message: "Asistencia guardada correctamente" };
+    
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+}
+
+/**
+ * Obtiene la confirmación de asistencia de una persona
+ */
+function getAsistencia(nombre) {
+  try {
+    const horariosSheet = getHojaHorarios();
+    const data = horariosSheet.getDataRange().getValues();
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === nombre) {
+        return data[i][1] === true;
+      }
+    }
+    
+    return false; // Por defecto, no ha confirmado asistencia
+    
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Obtiene el contador de personas que han confirmado asistencia
+ */
+function getContadorAsistencia() {
+  try {
+    const horariosSheet = getHojaHorarios();
+    const data = horariosSheet.getDataRange().getValues();
+    
+    let contador = 0;
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][1] === true) {
+        contador++;
+      }
+    }
+    
+    return contador;
+    
+  } catch (error) {
+    return 0;
+  }
+}
+
+/**
+ * Guarda los datos de viaje de una persona
+ */
+function saveDatosViaje(nombre, datosViaje) {
+  try {
+    const horariosSheet = getHojaHorarios();
+    const data = horariosSheet.getDataRange().getValues();
+    
+    // Buscar si la persona ya existe en la hoja
+    let personaRow = -1;
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === nombre) {
+        personaRow = i;
+        break;
+      }
+    }
+    
+    if (personaRow === -1) {
+      // Añadir nueva fila para la persona
+      const config = cargarConfiguracionPersonas();
+      const personaConfig = config.listaPersonas.find(p => p.nombre === nombre);
+      
+      if (personaConfig) {
+        const asistencia = getAsistencia(nombre);
+        const newRow = [nombre, asistencia];
+        
+        // Añadir datos de los trayectos
+        newRow.push(
+          datosViaje.trayecto1.salida || "",
+          datosViaje.trayecto1.llegada || "",
+          datosViaje.trayecto1.transporte || "",
+          datosViaje.trayecto2.salida || "",
+          datosViaje.trayecto2.llegada || "",
+          datosViaje.trayecto2.transporte || "",
+          datosViaje.trayecto3.salida || "",
+          datosViaje.trayecto3.llegada || "",
+          datosViaje.trayecto3.transporte || "",
+          datosViaje.trayecto4.salida || "",
+          datosViaje.trayecto4.llegada || "",
+          datosViaje.trayecto4.transporte || ""
+        );
+        
+        horariosSheet.appendRow(newRow);
+      } else {
+        return { success: false, message: "Persona no encontrada en la configuración" };
+      }
+    } else {
+      // Actualizar datos de viaje existentes
+      const rowNum = personaRow + 1;
+      
+      // Trayecto 1
+      horariosSheet.getRange(rowNum, 3).setValue(datosViaje.trayecto1.salida || "");
+      horariosSheet.getRange(rowNum, 4).setValue(datosViaje.trayecto1.llegada || "");
+      horariosSheet.getRange(rowNum, 5).setValue(datosViaje.trayecto1.transporte || "");
+      
+      // Trayecto 2
+      horariosSheet.getRange(rowNum, 6).setValue(datosViaje.trayecto2.salida || "");
+      horariosSheet.getRange(rowNum, 7).setValue(datosViaje.trayecto2.llegada || "");
+      horariosSheet.getRange(rowNum, 8).setValue(datosViaje.trayecto2.transporte || "");
+      
+      // Trayecto 3
+      horariosSheet.getRange(rowNum, 9).setValue(datosViaje.trayecto3.salida || "");
+      horariosSheet.getRange(rowNum, 10).setValue(datosViaje.trayecto3.llegada || "");
+      horariosSheet.getRange(rowNum, 11).setValue(datosViaje.trayecto3.transporte || "");
+      
+      // Trayecto 4
+      horariosSheet.getRange(rowNum, 12).setValue(datosViaje.trayecto4.salida || "");
+      horariosSheet.getRange(rowNum, 13).setValue(datosViaje.trayecto4.llegada || "");
+      horariosSheet.getRange(rowNum, 14).setValue(datosViaje.trayecto4.transporte || "");
+    }
+    
+    return { success: true, message: "Datos de viaje guardados correctamente" };
+    
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+}
+
+/**
+ * Obtiene los datos de viaje de una persona
+ */
+function getDatosViaje(nombre) {
+  try {
+    const horariosSheet = getHojaHorarios();
+    const data = horariosSheet.getDataRange().getValues();
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === nombre) {
+        const row = data[i];
+        return {
+          trayecto1: {
+            salida: row[2] || "",
+            llegada: row[3] || "",
+            transporte: row[4] || ""
+          },
+          trayecto2: {
+            salida: row[5] || "",
+            llegada: row[6] || "",
+            transporte: row[7] || ""
+          },
+          trayecto3: {
+            salida: row[8] || "",
+            llegada: row[9] || "",
+            transporte: row[10] || ""
+          },
+          trayecto4: {
+            salida: row[11] || "",
+            llegada: row[12] || "",
+            transporte: row[13] || ""
+          }
+        };
+      }
+    }
+    
+    return {}; // Retornar objeto vacío si no hay datos
+    
+  } catch (error) {
+    return {};
+  }
+}
+
+/**
+ * Obtiene todos los horarios de todas las personas
+ */
+function getAllHorarios() {
+  try {
+    const horariosSheet = getHojaHorarios();
+    const data = horariosSheet.getDataRange().getValues();
+    const config = cargarConfiguracionPersonas();
+    
+    const todosHorarios = [];
+    
+    // Obtener todas las personas de la configuración
+    config.listaPersonas.forEach(personaConfig => {
+      const nombre = personaConfig.nombre;
+      
+      // Buscar datos en la hoja de horarios
+      let horariosPersona = {
+        nombre: nombre,
+        foto: personaConfig.foto || "",
+        asistencia: false,
+        datosViaje: null
+      };
+      
+      for (let i = 1; i < data.length; i++) {
+        if (data[i][0] === nombre) {
+          const row = data[i];
+          horariosPersona.asistencia = row[1] === true;
+          horariosPersona.datosViaje = {
+            trayecto1: {
+              salida: row[2] || "",
+              llegada: row[3] || "",
+              transporte: row[4] || ""
+            },
+            trayecto2: {
+              salida: row[5] || "",
+              llegada: row[6] || "",
+              transporte: row[7] || ""
+            },
+            trayecto3: {
+              salida: row[8] || "",
+              llegada: row[9] || "",
+              transporte: row[10] || ""
+            },
+            trayecto4: {
+              salida: row[11] || "",
+              llegada: row[12] || "",
+              transporte: row[13] || ""
+            }
+          };
+          break;
+        }
+      }
+      
+      todosHorarios.push(horariosPersona);
+    });
+    
+    return todosHorarios;
+    
+  } catch (error) {
+    return [];
   }
 }

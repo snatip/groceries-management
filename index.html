@@ -677,6 +677,11 @@
 
     /* MEDIA QUERIES RESPONSIVAS */
     @media (max-width: 600px) {
+      /* === Mejoras generales para móviles === */
+      body {
+        font-size: 16px; /* Tamaño de fuente base más grande para mejor legibilidad */
+      }
+
       .profile-selection h2 {
         font-size: 2rem;
         margin-bottom: 2rem;
@@ -720,22 +725,23 @@
       }
 
       .user-avatar {
-        width: 50px;
-        height: 50px;
-        font-size: 1rem;
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
       }
 
       .welcome-info h4 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         line-height: 1.3;
       }
 
       .welcome-info .total-gastos {
-        font-size: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
       }
 
       .header p {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         margin-top: 0.25rem;
       }
 
@@ -749,8 +755,9 @@
       }
 
       .card-title {
-        font-size: 1rem;
+        font-size: 1.1rem;
         margin-bottom: 0.75rem;
+        font-weight: 600;
       }
 
       .select-container {
@@ -758,57 +765,149 @@
       }
 
       .select-label {
-        font-size: 0.9rem;
+        font-size: 1rem;
         margin-bottom: 0.4rem;
+        font-weight: 600;
       }
 
       .select-button {
-        padding: 0.75rem 2rem 0.75rem 0.875rem;
-        font-size: 0.9rem;
+        padding: 1rem 2rem 1rem 0.875rem;
+        font-size: 1rem;
         border-radius: 10px;
-        min-height: 44px;
+        min-height: 48px;
+        border-width: 2px;
       }
 
       .select-option {
-        padding: 0.75rem 0.875rem;
-        font-size: 0.9rem;
-        min-height: 40px;
+        padding: 0.875rem 0.875rem;
+        font-size: 1rem;
+        min-height: 44px;
       }
 
       .product-item {
-        padding: 0.75rem;
-        margin-bottom: 0.4rem;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
         border-radius: 10px;
-        min-height: 56px;
+        min-height: 60px;
       }
 
       .product-name {
-        font-size: 0.95rem;
+        font-size: 1rem;
         flex-direction: column;
         align-items: flex-start;
         gap: 0.3rem;
+        font-weight: 500;
       }
 
       .product-price {
-        font-size: 0.9rem;
+        font-size: 1rem;
         margin-top: 0.2rem;
+        font-weight: 600;
       }
 
       .person-badges {
-        gap: 0.15rem;
+        gap: 0.2rem;
         margin-top: 0.3rem;
       }
 
       .person-badge {
-        width: 20px;
-        height: 20px;
-        font-size: 0.6rem;
-        min-width: 20px;
+        width: 22px;
+        height: 22px;
+        font-size: 0.65rem;
+        min-width: 22px;
+      }
+
+      /* === Mejoras en tabs para móviles === */
+      .tabs .tab {
+        min-width: auto;
+        flex: 1;
       }
 
       .tabs .tab a {
+        font-size: 0.95rem;
+        padding: 12px 8px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      /* === Mejoras en botones para móviles === */
+      .btn-action, .btn-grupo {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+        min-height: 48px;
+        border-radius: 10px;
+        font-weight: 600;
+      }
+
+      .btn-modal {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+        min-height: 44px;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+
+      /* === Mejoras en modales para móviles === */
+      .modal-content {
+        width: 98% !important;
+        max-width: none !important;
+        margin: 10px !important;
+        border-radius: 15px !important;
+      }
+
+      .modal-title {
+        font-size: 1.3rem !important;
+        margin-bottom: 1rem !important;
+      }
+
+      /* === Mejoras específicas para la pestaña de horarios === */
+      .asistencia-section, .viaje-section {
+        margin-bottom: 1rem;
+      }
+
+      .asistencia-section label {
+        font-size: 1.1rem !important;
+        padding: 1rem !important;
+      }
+
+      .viaje-section button {
+        padding: 1rem 2rem !important;
+        font-size: 1.1rem !important;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .evento-horario {
+        margin-bottom: 1.25rem !important;
+      }
+
+      .evento-horario > div {
+        padding: 1rem !important;
+      }
+
+      .evento-horario strong {
+        font-size: 1.1rem !important;
+      }
+
+      .evento-horario div[style*="color: #666"] {
+        font-size: 0.95rem !important;
+      }
+
+      /* === Mejoras en tablas para móviles === */
+      table {
         font-size: 0.9rem;
-        padding: 10px 12px;
+      }
+
+      th, td {
+        padding: 0.5rem !important;
+        white-space: nowrap;
+      }
+
+      /* === Ajustes en el mensaje de advertencia === */
+      div[style*="background: #fff3cd"] {
+        font-size: 0.9rem !important;
+        padding: 1rem !important;
+        line-height: 1.4 !important;
       }
 
       .resume-header {
@@ -828,8 +927,89 @@
         font-size: 1.1rem;
       }
 
-      .resume-total {
-        font-size: 0.95rem;
+      .form-group input, .form-group select {
+        padding: 0.875rem !important;
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        min-height: 44px !important;
+      }
+
+      .form-group label {
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+      }
+
+      /* === Mejoras en accesibilidad para toques === */
+      input[type="checkbox"] {
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+      }
+
+      .checkbox-wrapper {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        margin: 0.5rem 0 !important;
+      }
+
+      .checkbox-wrapper label {
+        font-size: 1rem !important;
+        line-height: 1.4 !important;
+      }
+
+      /* === Mejoras en espaciado para móviles === */
+      .container {
+        padding: 0.75rem !important;
+      }
+
+      .card {
+        margin-bottom: 1rem !important;
+      }
+
+      .card-content {
+        padding: 1rem !important;
+      }
+
+      /* === Responsive para tabs en móviles pequeños === */
+      @media (max-width: 400px) {
+        .tabs .tab a {
+          font-size: 0.85rem;
+          padding: 10px 6px;
+        }
+        
+        .card-title {
+          font-size: 1rem;
+        }
+        
+        .btn-action, .btn-grupo {
+          padding: 0.75rem 1rem;
+          font-size: 0.9rem;
+        }
+      }
+
+      /* === Mejoras en la tabla resumen para móviles muy pequeños === */
+      @media (max-width: 480px) {
+        #tabla-resumen-content {
+          font-size: 0.8rem;
+        }
+        
+        #tabla-resumen-content th,
+        #tabla-resumen-content td {
+          padding: 0.25rem 0.125rem !important;
+          font-size: 0.8rem;
+        }
+        
+        #tabla-resumen-content .person-badge {
+          width: 18px;
+          height: 18px;
+          font-size: 0.6rem;
+        }
+      }
+    }
+
+    .resume-total {
         padding: 0.4rem 0.6rem;
         align-self: flex-end;
       }
@@ -1530,6 +1710,9 @@
     let inicialesPersonas = {};
 
     function init() {
+      // Configurar atajos de teclado
+      configurarAtajosTeclado();
+      
       // Cargar configuración de personas
       google.script.run
         .withSuccessHandler((personas) => {
@@ -1547,6 +1730,32 @@
           renderProfileSelection(fallbackPersonas);
         })
         .getPersonasConfiguracion();
+    }
+
+    // === FUNCIONES PARA ATAJOS DE TECLADO ===
+    function configurarAtajosTeclado() {
+      document.addEventListener('keydown', function(e) {
+        // Tecla ESC para cerrar modales
+        if (e.key === 'Escape') {
+          cerrarModalConESC();
+        }
+      });
+    }
+
+    function cerrarModalConESC() {
+      // Buscar cualquier modal abierto y cerrarlo
+      const modalesAbiertos = document.querySelectorAll('.modal-overlay');
+      if (modalesAbiertos.length > 0) {
+        // Cerrar el modal más reciente (el que está encima)
+        const modalMasReciente = modalesAbiertos[modalesAbiertos.length - 1];
+        const modalId = modalMasReciente.id;
+        
+        if (modalId === 'modal-nueva-compra') {
+          cerrarModalNuevaCompra();
+        } else {
+          cerrarModal(modalId);
+        }
+      }
     }
 
     function renderProfileSelection(personas) {
@@ -1671,13 +1880,13 @@
         btnCrearGrupo.classList.add('loading');
         btnCrearGrupo.textContent = 'Creando...';
 
+        // El modal se mostrará inmediatamente, restauramos el botón después de un breve tiempo
         mostrarModalCrearGrupo();
-
-        // cuando termine la acción, restauras el botón
+        
         setTimeout(() => {
           btnCrearGrupo.classList.remove('loading');
           btnCrearGrupo.textContent = 'Crear Grupo';
-        }, 5000); // ajusta según tu flujo real
+        }, 10000); // Aumentado a 10 segundos por lentitud
       };
       //btnCrearGrupo.onclick = mostrarModalCrearGrupo;
       
@@ -1690,11 +1899,11 @@
 
         mostrarModalUnirseGrupo();
 
-        // cuando termine la acción, restauras el botón
+        // Restaurar el botón después de que el modal aparezca
         setTimeout(() => {
           btnUnirseGrupo.classList.remove('loading');
           btnUnirseGrupo.textContent = grupoActual ? 'Cambiar Grupo' : 'Unirse a Grupo';
-        }, 5000); // ajusta según tu flujo real
+        }, 10000); // Aumentado a 10 segundos por lentitud
       };
       //btnUnirseGrupo.onclick = mostrarModalUnirseGrupo;
       
@@ -1709,13 +1918,8 @@
           btnSalirGrupo.classList.add('loading');
           btnSalirGrupo.textContent = 'Saliendo...';
 
+          // La función salirDelGrupo manejará la restauración del botón
           salirDelGrupo();
-
-          // cuando termine la acción, restauras el botón
-          setTimeout(() => {
-            btnSalirGrupo.classList.remove('loading');
-            btnSalirGrupo.textContent = 'Salir del Grupo';
-          }, 5000); // ajusta según tu flujo real
         };
         //btnSalirGrupo.onclick = salirDelGrupo;
         grupoActions.appendChild(btnSalirGrupo);
@@ -1775,6 +1979,11 @@
       }, 100);
       
       cargarResumen();
+      
+      // Cargar horarios para la pestaña activa
+      setTimeout(() => {
+        cargarHorarios();
+      }, 200);
     }
 
     function initCustomSelects() {
@@ -1870,11 +2079,12 @@
           this.classList.add('loading');
           this.innerHTML = '<i class="material-icons">hourglass_empty</i>Cargando...';
           
+          // Mostrar el modal inmediatamente y restaurar el botón
           setTimeout(() => {
             mostrarModalNuevaCompra();
             this.classList.remove('loading');
             this.innerHTML = '<i class="material-icons">add</i>Nueva Compra';
-          }, 5000);
+          }, 10000); // Aumentado a 10 segundos por lentitud
         };
         
         const selectContainer = document.querySelector('#compra-select').parentElement;
@@ -2228,9 +2438,14 @@
     }
 
 
-    function unirseAGrupo(idGrupo) {
+    function unirseAGrupo(idGrupo, btnUnion) {
       google.script.run
         .withSuccessHandler((resultado) => {
+          if (btnUnion) {
+            btnUnion.classList.remove('loading');
+            btnUnion.textContent = 'Unirse';
+          }
+          
           if (resultado.success) {
             alert(resultado.message);
             cerrarModal('modal-unirse-grupo');
@@ -2238,6 +2453,13 @@
           } else {
             alert('Error: ' + resultado.message);
           }
+        })
+        .withFailureHandler((error) => {
+          if (btnUnion) {
+            btnUnion.classList.remove('loading');
+            btnUnion.textContent = 'Unirse';
+          }
+          alert('Error al unirse al grupo: ' + error.message);
         })
         .unirseAGrupo(usuarioInfo.nombre, idGrupo);
     }
@@ -2252,6 +2474,9 @@
             } else {
               alert('Error: ' + resultado.message);
             }
+          })
+          .withFailureHandler((error) => {
+            alert('Error al salir del grupo: ' + error.message);
           })
           .salirDeGrupo(usuarioInfo.nombre);
       }
@@ -2285,6 +2510,792 @@
         .actualizarResumenDesdeApp();
     }
 
+    // === FUNCIONES PARA GESTIÓN DE HORARIOS Y VIAJES ===
+    function mostrarModalViajeConCarga() {
+      const btn = document.getElementById('btn-datos-viaje');
+      btn.classList.add('loading');
+      btn.innerHTML = '<i class="material-icons">hourglass_empty</i>Cargando...';
+      
+      // Mostrar el modal después de un breve tiempo para mostrar el estado de carga
+      setTimeout(() => {
+        mostrarModalViaje();
+        btn.classList.remove('loading');
+        btn.innerHTML = '<i class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">edit</i>Introducir/Modificar Datos de Viaje';
+      }, 10000); // 10 segundos por lentitud
+    }
+
+    function mostrarModalViaje() {
+      // Cargar datos de viaje existentes primero
+      google.script.run
+        .withSuccessHandler((datosViaje) => {
+          const modalHtml = `
+            <div class="modal-overlay" id="modal-viaje" style="z-index: 10001;">
+              <div class="modal-content" style="width: 95%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+                <h3 class="modal-title">Datos de Viaje - Casa Rural</h3>
+                <form id="form-viaje">
+                  <div style="margin-bottom: 2rem;">
+                    <h4 style="color: #2c3e50; margin-bottom: 1.5rem; text-align: center;">Introduce tus horarios de viaje (opcional)</h4>
+                    
+                    <!-- Trayecto 1: Comunidad de origen -> Madrid (Ida) -->
+                    <div class="trayecto-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9ff; border-radius: 10px;">
+                      <h5 style="color: #2a3864; margin-bottom: 1rem; display: flex; align-items: center;">
+                        <i class="material-icons" style="margin-right: 0.5rem;">flight_takeoff</i>
+                        Comunidad de origen → Madrid (Ida)
+                      </h5>
+                      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                          <label for="trayecto1-salida">Hora de salida:</label>
+                          <input type="time" id="trayecto1-salida" value="${datosViaje.trayecto1?.salida || ''}">
+                        </div>
+                        <div class="form-group">
+                          <label for="trayecto1-llegada">Hora de llegada:</label>
+                          <input type="time" id="trayecto1-llegada" value="${datosViaje.trayecto1?.llegada || ''}">
+                        </div>
+                        <div class="form-group">
+                          <label for="trayecto1-transporte">Medio de transporte:</label>
+                          <select id="trayecto1-transporte" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; display: flex;">
+                            <option value="">No especificado</option>
+                            <option value="coche">🚗 Coche</option>
+                            <option value="bus">🚌 Bus</option>
+                            <option value="tren">🚂 Tren</option>
+                            <option value="otro">❓ Otro</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Trayecto 2: Madrid -> Talavera (Ida) -->
+                    <div class="trayecto-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9ff; border-radius: 10px;">
+                      <h5 style="color: #2a3864; margin-bottom: 1rem; display: flex; align-items: center;">
+                        <i class="material-icons" style="margin-right: 0.5rem;">directions_car</i>
+                        Madrid → Talavera (Ida)
+                      </h5>
+                      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                          <label for="trayecto2-salida">Hora de salida:</label>
+                          <input type="time" id="trayecto2-salida" value="${datosViaje.trayecto2?.salida || ''}">
+                        </div>
+                        <div class="form-group">
+                          <label for="trayecto2-llegada">Hora de llegada:</label>
+                          <input type="time" id="trayecto2-llegada" value="${datosViaje.trayecto2?.llegada || ''}">
+                        </div>
+                        <div class="form-group">
+                          <label for="trayecto2-transporte">Medio de transporte:</label>
+                          <select id="trayecto2-transporte" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; display: flex;">
+                            <option value="">No especificado</option>
+                            <option value="coche">🚗 Coche</option>
+                            <option value="bus">🚌 Bus</option>
+                            <option value="tren">🚂 Tren</option>
+                            <option value="otro">❓ Otro</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Trayecto 3: Talavera -> Madrid (Vuelta) -->
+                    <div class="trayecto-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9ff; border-radius: 10px;">
+                      <h5 style="color: #2a3864; margin-bottom: 1rem; display: flex; align-items: center;">
+                        <i class="material-icons" style="margin-right: 0.5rem;">flight_land</i>
+                        Talavera → Madrid (Vuelta)
+                      </h5>
+                      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                          <label for="trayecto3-salida">Hora de salida:</label>
+                          <input type="time" id="trayecto3-salida" value="${datosViaje.trayecto3?.salida || ''}">
+                        </div>
+                        <div class="form-group">
+                          <label for="trayecto3-llegada">Hora de llegada:</label>
+                          <input type="time" id="trayecto3-llegada" value="${datosViaje.trayecto3?.llegada || ''}">
+                        </div>
+                        <div class="form-group">
+                          <label for="trayecto3-transporte">Medio de transporte:</label>
+                          <select id="trayecto3-transporte" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; display: flex;">
+                            <option value="">No especificado</option>
+                            <option value="coche">🚗 Coche</option>
+                            <option value="bus">🚌 Bus</option>
+                            <option value="tren">🚂 Tren</option>
+                            <option value="otro">❓ Otro</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Trayecto 4: Madrid -> Comunidad de origen (Vuelta) -->
+                    <div class="trayecto-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9ff; border-radius: 10px;">
+                      <h5 style="color: #2a3864; margin-bottom: 1rem; display: flex; align-items: center;">
+                        <i class="material-icons" style="margin-right: 0.5rem;">home</i>
+                        Madrid → Comunidad de origen (Vuelta)
+                      </h5>
+                      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                          <label for="trayecto4-salida">Hora de salida:</label>
+                          <input type="time" id="trayecto4-salida" value="${datosViaje.trayecto4?.salida || ''}">
+                        </div>
+                        <div class="form-group">
+                          <label for="trayecto4-llegada">Hora de llegada:</label>
+                          <input type="time" id="trayecto4-llegada" value="${datosViaje.trayecto4?.llegada || ''}">
+                        </div>
+                        <div class="form-group">
+                          <label for="trayecto4-transporte">Medio de transporte:</label>
+                          <select id="trayecto4-transporte" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; display: flex;">
+                            <option value="">No especificado</option>
+                            <option value="coche">🚗 Coche</option>
+                            <option value="bus">🚌 Bus</option>
+                            <option value="tren">🚂 Tren</option>
+                            <option value="otro">❓ Otro</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Campo de notas adicionales -->
+                  <div class="form-group">
+                    <label for="notas-viaje">Notas adicionales (opcional):</label>
+                    <textarea 
+                      id="notas-viaje" 
+                      placeholder="Añade cualquier nota relevante sobre tu viaje (ej: paradas previstas, compartir coche, etc.)"
+                      style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; resize: vertical; min-height: 80px; font-family: inherit; font-size: 0.95rem;"
+                      maxlength="500"
+                      oninput="actualizarContadorNotas()">${datosViaje.notas || ''}</textarea>
+                    <div style="text-align: right; margin-top: 0.25rem; font-size: 0.8rem; color: #666;">
+                      <span id="contador-notas">${(datosViaje.notas || '').length}</span>/500 caracteres
+                    </div>
+                  </div>
+                  
+                  <div class="modal-buttons">
+                    <button type="button" class="btn-modal btn-secondary" onclick="cerrarModal('modal-viaje')">Cancelar</button>
+                    <button type="submit" class="btn-modal btn-primary">Guardar Datos</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          `;
+          
+          document.body.insertAdjacentHTML('beforeend', modalHtml);
+          
+          document.getElementById('form-viaje').onsubmit = function(e) {
+            e.preventDefault();
+            guardarDatosViaje();
+          };
+        })
+        .withFailureHandler((error) => {
+          console.error('Error al cargar datos de viaje:', error);
+          // Si hay error, mostrar el modal con datos vacíos
+          mostrarModalViajeConDatosVacios();
+        })
+        .getDatosViaje(usuarioInfo.nombre);
+    }
+
+    function mostrarModalViajeConDatosVacios() {
+      const modalHtml = `
+        <div class="modal-overlay" id="modal-viaje" style="z-index: 10001;">
+          <div class="modal-content" style="width: 95%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <h3 class="modal-title">Datos de Viaje - Casa Rural</h3>
+            <form id="form-viaje">
+              <!-- Contenido similar al anterior pero con valores vacíos -->
+              <div style="margin-bottom: 2rem;">
+                <h4 style="color: #2c3e50; margin-bottom: 1.5rem; text-align: center;">Introduce tus horarios de viaje (opcional)</h4>
+                
+                <!-- Los 4 trayectos con campos vacíos -->
+                <div class="trayecto-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9ff; border-radius: 10px;">
+                  <h5 style="color: #2a3864; margin-bottom: 1rem; display: flex; align-items: center;">
+                    <i class="material-icons" style="margin-right: 0.5rem;">flight_takeoff</i>
+                    Comunidad de origen → Madrid (Ida)
+                  </h5>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                      <label for="trayecto1-salida">Hora de salida:</label>
+                      <input type="time" id="trayecto1-salida">
+                    </div>
+                    <div class="form-group">
+                      <label for="trayecto1-llegada">Hora de llegada:</label>
+                      <input type="time" id="trayecto1-llegada">
+                    </div>
+                    <div class="form-group">
+                      <label for="trayecto1-transporte">Medio de transporte:</label>
+                      <select id="trayecto1-transporte" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; display: flex;">
+                        <option value="">No especificado</option>
+                        <option value="coche">🚗 Coche</option>
+                        <option value="bus">🚌 Bus</option>
+                        <option value="tren">🚂 Tren</option>
+                        <option value="otro">❓ Otro</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Repetir estructura para los otros 3 trayectos... -->
+                <div class="trayecto-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9ff; border-radius: 10px;">
+                  <h5 style="color: #2a3864; margin-bottom: 1rem; display: flex; align-items: center;">
+                    <i class="material-icons" style="margin-right: 0.5rem;">directions_car</i>
+                    Madrid → Talavera (Ida)
+                  </h5>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                      <label for="trayecto2-salida">Hora de salida:</label>
+                      <input type="time" id="trayecto2-salida">
+                    </div>
+                    <div class="form-group">
+                      <label for="trayecto2-llegada">Hora de llegada:</label>
+                      <input type="time" id="trayecto2-llegada">
+                    </div>
+                    <div class="form-group">
+                      <label for="trayecto2-transporte">Medio de transporte:</label>
+                      <select id="trayecto2-transporte" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; display: flex;">
+                        <option value="">No especificado</option>
+                        <option value="coche">🚗 Coche</option>
+                        <option value="bus">🚌 Bus</option>
+                        <option value="tren">🚂 Tren</option>
+                        <option value="otro">❓ Otro</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="trayecto-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9ff; border-radius: 10px;">
+                  <h5 style="color: #2a3864; margin-bottom: 1rem; display: flex; align-items: center;">
+                    <i class="material-icons" style="margin-right: 0.5rem;">flight_land</i>
+                    Talavera → Madrid (Vuelta)
+                  </h5>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                      <label for="trayecto3-salida">Hora de salida:</label>
+                      <input type="time" id="trayecto3-salida">
+                    </div>
+                    <div class="form-group">
+                      <label for="trayecto3-llegada">Hora de llegada:</label>
+                      <input type="time" id="trayecto3-llegada">
+                    </div>
+                    <div class="form-group">
+                      <label for="trayecto3-transporte">Medio de transporte:</label>
+                      <select id="trayecto3-transporte" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; display: flex;">
+                        <option value="">No especificado</option>
+                        <option value="coche">🚗 Coche</option>
+                        <option value="bus">🚌 Bus</option>
+                        <option value="tren">🚂 Tren</option>
+                        <option value="otro">❓ Otro</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="trayecto-section" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9ff; border-radius: 10px;">
+                  <h5 style="color: #2a3864; margin-bottom: 1rem; display: flex; align-items: center;">
+                    <i class="material-icons" style="margin-right: 0.5rem;">home</i>
+                    Madrid → Comunidad de origen (Vuelta)
+                  </h5>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                      <label for="trayecto4-salida">Hora de salida:</label>
+                      <input type="time" id="trayecto4-salida">
+                    </div>
+                    <div class="form-group">
+                      <label for="trayecto4-llegada">Hora de llegada:</label>
+                      <input type="time" id="trayecto4-llegada">
+                    </div>
+                    <div class="form-group">
+                      <label for="trayecto4-transporte">Medio de transporte:</label>
+                      <select id="trayecto4-transporte" style="width: 100%; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; display: flex;">
+                        <option value="">No especificado</option>
+                        <option value="coche">🚗 Coche</option>
+                        <option value="bus">🚌 Bus</option>
+                        <option value="tren">🚂 Tren</option>
+                        <option value="otro">❓ Otro</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Campo de notas adicionales -->
+                <div class="form-group">
+                  <label for="notas-viaje">Notas adicionales (opcional):</label>
+                  <textarea 
+                    id="notas-viaje" 
+                    placeholder="Añade cualquier nota relevante sobre tu viaje (ej: paradas previstas, compartir coche, etc.)"
+                    style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; resize: vertical; min-height: 80px; font-family: inherit; font-size: 0.95rem;"
+                    maxlength="500"
+                    oninput="actualizarContadorNotas()"></textarea>
+                  <div style="text-align: right; margin-top: 0.25rem; font-size: 0.8rem; color: #666;">
+                    <span id="contador-notas">0</span>/500 caracteres
+                  </div>
+                </div>
+                
+              </div>
+              
+              <div class="modal-buttons">
+                <button type="button" class="btn-modal btn-secondary" onclick="cerrarModal('modal-viaje')">Cancelar</button>
+                <button type="submit" class="btn-modal btn-primary">Guardar Datos</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+      
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      
+      document.getElementById('form-viaje').onsubmit = function(e) {
+        e.preventDefault();
+        guardarDatosViaje();
+      };
+    }
+
+    function guardarDatosViaje() {
+      const datosViaje = {
+        trayecto1: {
+          salida: document.getElementById('trayecto1-salida').value,
+          llegada: document.getElementById('trayecto1-llegada').value,
+          transporte: document.getElementById('trayecto1-transporte').value
+        },
+        trayecto2: {
+          salida: document.getElementById('trayecto2-salida').value,
+          llegada: document.getElementById('trayecto2-llegada').value,
+          transporte: document.getElementById('trayecto2-transporte').value
+        },
+        trayecto3: {
+          salida: document.getElementById('trayecto3-salida').value,
+          llegada: document.getElementById('trayecto3-llegada').value,
+          transporte: document.getElementById('trayecto3-transporte').value
+        },
+        trayecto4: {
+          salida: document.getElementById('trayecto4-salida').value,
+          llegada: document.getElementById('trayecto4-llegada').value,
+          transporte: document.getElementById('trayecto4-transporte').value
+        },
+        notas: document.getElementById('notas-viaje').value.trim()
+      };
+
+      google.script.run
+        .withSuccessHandler((resultado) => {
+          if (resultado.success) {
+            alert('Datos de viaje guardados correctamente');
+            cerrarModal('modal-viaje');
+            cargarHorarios(); // Recargar los horarios
+          } else {
+            alert('Error al guardar datos: ' + resultado.message);
+          }
+        })
+        .withFailureHandler((error) => {
+          alert('Error al guardar datos de viaje: ' + error.message);
+        })
+        .saveDatosViaje(usuarioInfo.nombre, datosViaje);
+    }
+
+    function actualizarContadorNotas() {
+      const textarea = document.getElementById('notas-viaje');
+      const contador = document.getElementById('contador-notas');
+      if (textarea && contador) {
+        contador.textContent = textarea.value.length;
+      }
+    }
+
+    // === FUNCIONES PARA GESTIÓN DE HORARIOS ===
+    function toggleAsistencia() {
+      const checkbox = document.getElementById('confirmar-asistencia');
+      const asistio = checkbox.checked;
+      
+      google.script.run
+        .withSuccessHandler((resultado) => {
+          if (resultado.success) {
+            // Actualizar contador de asistencia
+            actualizarContadorAsistencia();
+            cargarHorarios(); // Recargar todos los horarios
+          } else {
+            alert('Error al guardar asistencia: ' + resultado.message);
+            // Revertir el checkbox si hubo error
+            checkbox.checked = !asistio;
+          }
+        })
+        .withFailureHandler((error) => {
+          alert('Error al guardar asistencia: ' + error.message);
+          checkbox.checked = !asistio;
+        })
+        .saveAsistencia(usuarioInfo.nombre, asistio);
+    }
+
+    function actualizarContadorAsistencia() {
+      google.script.run
+        .withSuccessHandler((contador) => {
+          const contadorDiv = document.getElementById('contador-asistencia');
+          contadorDiv.textContent = `${contador} persona${contador !== 1 ? 's' : ''} confirmada${contador !== 1 ? 's' : ''} para la casa rural`;
+        })
+        .withFailureHandler(() => {
+          document.getElementById('contador-asistencia').textContent = 'Error al cargar contador';
+        })
+        .getContadorAsistencia();
+    }
+
+    function cargarHorarios() {
+      // Cargar asistencia del usuario actual
+      google.script.run
+        .withSuccessHandler((asistencia) => {
+          document.getElementById('confirmar-asistencia').checked = asistencia;
+        })
+        .withFailureHandler(() => {
+          document.getElementById('confirmar-asistencia').checked = false;
+        })
+        .getAsistencia(usuarioInfo.nombre);
+
+      // Actualizar contador de asistencia
+      actualizarContadorAsistencia();
+
+      // Cargar datos de viaje del usuario
+      google.script.run
+        .withSuccessHandler((datosViaje) => {
+          mostrarResumenViaje(datosViaje);
+        })
+        .withFailureHandler(() => {
+          document.getElementById('resumen-viaje').style.display = 'none';
+        })
+        .getDatosViaje(usuarioInfo.nombre);
+
+      // Cargar horario general de todos
+      cargarHorarioGeneral();
+
+      // Cargar tabla resumen
+      cargarTablaResumen();
+    }
+
+    function mostrarResumenViaje(datosViaje) {
+      const resumenDiv = document.getElementById('resumen-viaje');
+      const contentDiv = document.getElementById('viaje-resumen-content');
+      
+      if (!datosViaje || Object.keys(datosViaje).length === 0) {
+        resumenDiv.style.display = 'none';
+        return;
+      }
+
+      const transporteIconos = {
+        'coche': 'directions_car',
+        'bus': 'directions_bus',
+        'tren': 'train',
+        'otro': 'help_outline'
+      };
+
+      let html = '<div style="display: grid; gap: 1rem;">';
+      
+      const trayectos = [
+        { key: 'trayecto1', titulo: 'Comunidad de origen → Madrid (Ida)', icono: 'flight_takeoff' },
+        { key: 'trayecto2', titulo: 'Madrid → Talavera (Ida)', icono: 'directions_car' },
+        { key: 'trayecto3', titulo: 'Talavera → Madrid (Vuelta)', icono: 'flight_land' },
+        { key: 'trayecto4', titulo: 'Madrid → Comunidad de origen (Vuelta)', icono: 'home' }
+      ];
+
+      trayectos.forEach(trayecto => {
+        const datos = datosViaje[trayecto.key];
+        if (datos && (datos.salida || datos.llegada || datos.transporte)) {
+          html += `
+            <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: white; border-radius: 8px; border-left: 4px solid #2a3864;">
+              <i class="material-icons" style="color: #2a3864;">${trayecto.icono}</i>
+              <div style="flex: 1;">
+                <div style="font-weight: 500; color: #2c3e50; margin-bottom: 0.25rem;">${trayecto.titulo}</div>
+                <div style="display: flex; gap: 1rem; font-size: 0.9rem; color: #666;">
+                  ${datos.salida ? `<span><i class="material-icons" style="font-size: 14px; vertical-align: middle;">schedule</i> Salida: ${datos.salida}</span>` : ''}
+                  ${datos.llegada ? `<span><i class="material-icons" style="font-size: 14px; vertical-align: middle;">schedule</i> Llegada: ${datos.llegada}</span>` : ''}
+                  ${datos.transporte ? `<span><i class="material-icons" style="font-size: 14px; vertical-align: middle;">${transporteIconos[datos.transporte] || 'help_outline'}</i> ${datos.transporte}</span>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      html += '</div>';
+      
+      if (html === '<div style="display: grid; gap: 1rem;"></div>') {
+        resumenDiv.style.display = 'none';
+      } else {
+        contentDiv.innerHTML = html;
+        resumenDiv.style.display = 'block';
+      }
+    }
+
+    function cargarHorarioGeneral() {
+      const horarioDiv = document.getElementById('horario-general-content');
+      
+      google.script.run
+        .withSuccessHandler((todosHorarios) => {
+          if (!todosHorarios || todosHorarios.length === 0) {
+            horarioDiv.innerHTML = '<div class="empty-state">No hay datos de horarios disponibles</div>';
+            return;
+          }
+
+          // Crear horario tipo calendar para los 3 días
+          const dias = [
+            { fecha: '2024-09-19', nombre: 'Jueves 19 - Llegadas', horaInicio: '08:00', horaFin: '23:59' },
+            { fecha: '2024-09-20', nombre: 'Viernes 20 - Día completo', horaInicio: '00:00', horaFin: '23:59' },
+            { fecha: '2024-09-21', nombre: 'Sábado 21 - Salidas', horaInicio: '00:00', horaFin: '23:59' }
+          ];
+
+          let html = '<div style="display: grid; gap: 1.5rem;">';
+          
+          dias.forEach(dia => {
+            html += `
+              <div class="dia-horario">
+                <h4 style="color: #2a3864; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e0e0e0;">${dia.nombre}</h4>
+                <div class="timeline-horario" style="position: relative; padding-left: 2rem;">
+            `;
+
+            // Filtrar eventos para este día y ordenar por hora
+            const eventosDia = [];
+            todosHorarios.forEach(persona => {
+              if (persona.asistencia && persona.datosViaje) {
+                // Añadir eventos de llegada (trayecto2)
+                if (persona.datosViaje.trayecto2?.llegada) {
+                  eventosDia.push({
+                    hora: persona.datosViaje.trayecto2.llegada,
+                    tipo: 'llegada',
+                    persona: persona.nombre,
+                    transporte: persona.datosViaje.trayecto2.transporte,
+                    foto: persona.foto
+                  });
+                }
+                // Añadir eventos de salida (trayecto3)
+                if (persona.datosViaje.trayecto3?.salida) {
+                  eventosDia.push({
+                    hora: persona.datosViaje.trayecto3.salida,
+                    tipo: 'salida',
+                    persona: persona.nombre,
+                    transporte: persona.datosViaje.trayecto3.transporte,
+                    foto: persona.foto
+                  });
+                }
+              }
+            });
+
+            // Ordenar eventos por hora
+            eventosDia.sort((a, b) => a.hora.localeCompare(b.hora));
+
+            // Mostrar eventos
+            if (eventosDia.length === 0) {
+              html += '<div style="color: #666; font-style: italic;">No hay eventos programados para este día</div>';
+            } else {
+              eventosDia.forEach((evento, index) => {
+                const esLlegada = evento.tipo === 'llegada';
+                const icono = esLlegada ? 'flight_land' : 'flight_takeoff';
+                const color = esLlegada ? '#087C45' : '#d41050';
+                
+                html += `
+                  <div class="evento-horario" style="position: relative; margin-bottom: 1rem; padding-left: 1rem;">
+                    <div style="position: absolute; left: -1.5rem; top: 0; width: 12px; height: 12px; background: ${color}; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px ${color};"></div>
+                    <div style="background: white; padding: 0.75rem; border-radius: 8px; border-left: 3px solid ${color}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                          <i class="material-icons" style="color: ${color}; font-size: 18px;">${icono}</i>
+                          <strong style="color: #2c3e50;">${evento.hora}</strong>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                          ${getPersonaAvatar(evento.persona, evento.foto, 20)}
+                          <span style="font-weight: 500; color: #2c3e50;">${evento.persona}</span>
+                        </div>
+                      </div>
+                      <div style="color: #666; font-size: 0.9rem;">
+                        ${esLlegada ? 'Llega a Talavera' : 'Sale de Talavera'}
+                        ${evento.transporte ? ` • ${evento.transporte}` : ''}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              });
+            }
+
+            html += '</div></div>';
+          });
+
+          html += '</div>';
+          horarioDiv.innerHTML = html;
+        })
+        .withFailureHandler(() => {
+          horarioDiv.innerHTML = '<div class="loading">Error al cargar horarios</div>';
+        })
+        .getAllHorarios();
+    }
+
+    // Variable global para controlar si se muestran no confirmados
+    let mostrarNoConfirmados = false;
+
+    function toggleMostrarNoConfirmados() {
+      mostrarNoConfirmados = !mostrarNoConfirmados;
+      const btn = document.getElementById('btn-mostrar-no-confirmados');
+      
+      if (mostrarNoConfirmados) {
+        btn.textContent = 'Ocultar gente que no ha confirmado asistencia';
+        btn.classList.remove('secondary');
+      } else {
+        btn.textContent = 'Mostrar gente que no ha confirmado asistencia';
+        btn.classList.add('secondary');
+      }
+      
+      cargarTablaResumen();
+    }
+
+    function cargarTablaResumen() {
+      const tablaDiv = document.getElementById('tabla-resumen-content');
+      
+      google.script.run
+        .withSuccessHandler((todosHorarios) => {
+          if (!todosHorarios || todosHorarios.length === 0) {
+            tablaDiv.innerHTML = '<div class="empty-state">No hay datos disponibles</div>';
+            return;
+          }
+
+          // Filtrar personas según el estado de mostrarNoConfirmados
+          const personasFiltradas = todosHorarios.filter(persona => 
+            mostrarNoConfirmados || persona.asistencia
+          );
+
+          if (personasFiltradas.length === 0) {
+            tablaDiv.innerHTML = '<div class="empty-state">No hay personas confirmadas para mostrar</div>';
+            return;
+          }
+
+          // Habilitar el botón después de la primera carga
+          const btnMostrarNoConfirmados = document.getElementById('btn-mostrar-no-confirmados');
+          if (btnMostrarNoConfirmados.disabled) {
+            btnMostrarNoConfirmados.disabled = false;
+          }
+
+          let html = `
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden;">
+                <thead>
+                  <tr style="background: #2a3864; color: white;">
+                    <th style="padding: 0.75rem; text-align: left;">Persona</th>
+                    <th style="padding: 0.75rem; text-align: center;">Asistencia</th>
+                    <th style="padding: 0.75rem; text-align: center;">Origen → Madrid</th>
+                    <th style="padding: 0.75rem; text-align: center;">Madrid → Talavera</th>
+                    <th style="padding: 0.75rem; text-align: center;">Talavera → Madrid</th>
+                    <th style="padding: 0.75rem; text-align: center;">Madrid → Origen</th>
+                  </tr>
+                </thead>
+                <tbody>
+          `;
+
+          personasFiltradas.forEach(persona => {
+            const asistenciaIcono = persona.asistencia ? 
+              '<i class="material-icons" style="color: #087C45; font-size: 18px;">check_circle</i>' : 
+              '<i class="material-icons" style="color: #ccc; font-size: 18px;">cancel</i>';
+
+            const nombreConNota = persona.notas ? 
+              `<span style="cursor: help; border-bottom: 1px dotted #2a3864; position: relative;" 
+                    onmouseover="mostrarNota(event, '${persona.notas.replace(/'/g, "\\'")}', this)"
+                    onmouseout="ocultarNota()"
+                    onclick="mostrarNota(event, '${persona.notas.replace(/'/g, "\\'")}', this)">
+                    ${persona.nombre}
+                   </span>` : 
+              persona.nombre;
+
+            html += `
+              <tr style="border-bottom: 1px solid #e0e0e0;">
+                <td style="padding: 0.75rem;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    ${getPersonaAvatar(persona.nombre, persona.foto, 24)}
+                    <span style="font-weight: 500;">${nombreConNota}</span>
+                  </div>
+                </td>
+                <td style="padding: 0.75rem; text-align: center;">${asistenciaIcono}</td>
+                <td style="padding: 0.75rem; text-align: center; font-size: 0.9rem;">
+                  ${formatearCeldaTrayecto(persona.datosViaje?.trayecto1)}
+                </td>
+                <td style="padding: 0.75rem; text-align: center; font-size: 0.9rem;">
+                  ${formatearCeldaTrayecto(persona.datosViaje?.trayecto2)}
+                </td>
+                <td style="padding: 0.75rem; text-align: center; font-size: 0.9rem;">
+                  ${formatearCeldaTrayecto(persona.datosViaje?.trayecto3)}
+                </td>
+                <td style="padding: 0.75rem; text-align: center; font-size: 0.9rem;">
+                  ${formatearCeldaTrayecto(persona.datosViaje?.trayecto4)}
+                </td>
+              </tr>
+            `;
+          });
+
+          html += '</tbody></table></div>';
+          tablaDiv.innerHTML = html;
+        })
+        .withFailureHandler(() => {
+          tablaDiv.innerHTML = '<div class="loading">Error al cargar tabla resumen</div>';
+        })
+        .getAllHorarios();
+    }
+
+    function getPersonaAvatar(nombre, foto, tamaño) {
+      if (foto) {
+        return `<img src="${foto}" alt="${nombre}" style="width: ${tamaño}px; height: ${tamaño}px; border-radius: 50%; object-fit: cover;">`;
+      } else {
+        const iniciales = usuarioInfo && usuarioInfo.nombre === nombre ? usuarioInfo.iniciales : nombre.charAt(0).toUpperCase();
+        return `<div style="width: ${tamaño}px; height: ${tamaño}px; border-radius: 50%; background: linear-gradient(135deg, #2a3864, #d41050); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: ${tamaño * 0.4}px;">${iniciales}</div>`;
+      }
+    }
+
+    function formatearCeldaTrayecto(trayecto) {
+      if (!trayecto || (!trayecto.salida && !trayecto.llegada && !trayecto.transporte)) {
+        return '<span style="color: #999;">—</span>';
+      }
+
+      const partes = [];
+      if (trayecto.salida) partes.push(`Sale: ${trayecto.salida}`);
+      if (trayecto.llegada) partes.push(`Llega: ${trayecto.llegada}`);
+      if (trayecto.transporte) partes.push(trayecto.transporte);
+
+      return `<div style="color: #2c3e50;">${partes.join('<br>')}</div>`;
+    }
+
+    function mostrarNota(event, nota, elemento) {
+      // Eliminar cualquier tooltip existente
+      ocultarNota();
+      
+      // Crear tooltip
+      const tooltip = document.createElement('div');
+      tooltip.id = 'tooltip-nota';
+      tooltip.style.cssText = `
+        position: absolute;
+        background: #2a3864;
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        max-width: 300px;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        line-height: 1.4;
+      `;
+      tooltip.textContent = nota;
+      
+      // Posicionar tooltip
+      const rect = elemento.getBoundingClientRect();
+      tooltip.style.left = rect.left + 'px';
+      tooltip.style.top = (rect.bottom + 5) + 'px';
+      
+      // Ajustar si se sale de la pantalla
+      setTimeout(() => {
+        const tooltipRect = tooltip.getBoundingClientRect();
+        if (tooltipRect.right > window.innerWidth) {
+          tooltip.style.left = (window.innerWidth - tooltipRect.width - 10) + 'px';
+        }
+        if (tooltipRect.bottom > window.innerHeight) {
+          tooltip.style.top = (rect.top - tooltipRect.height - 5) + 'px';
+        }
+      }, 0);
+      
+      document.body.appendChild(tooltip);
+      
+      // Para móviles, hacer clic para cerrar
+      if (window.innerWidth <= 600) {
+        setTimeout(() => {
+          document.addEventListener('click', ocultarNota);
+        }, 100);
+      }
+    }
+
+    function ocultarNota() {
+      const tooltip = document.getElementById('tooltip-nota');
+      if (tooltip) {
+        tooltip.remove();
+      }
+      document.removeEventListener('click', ocultarNota);
+    }
+
     // === FUNCIONES PARA CREAR NUEVA COMPRA ===
     let productosCompra = [];
 
@@ -2309,6 +3320,9 @@
                     <button type="button" class="btn-action" onclick="añadirProducto()">
                       <i class="material-icons">add</i>Añadir Producto
                     </button>
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; font-size: 0.85rem; color: #856404;">
+                      <strong>⚠️ Advertencia:</strong> para guardar un producto, añade otro vacío y dale a guardar (no es lo más cómodo del mundo pero no soy programador experto como... otros 🫥). Cuando hayáis añadido y guardado el último producto de la compra, esperad un par de segundos y borrad el vacío que acabáis de añadir (esto no es obligatorio pero ayuda al programa a procesar los productos si se han introducido muy rápido).
+                    </div>
                   </div>
                   
                   <div class="total-compra" id="total-compra">
@@ -2529,8 +3543,11 @@
 
     function seleccionarTodos(productoIndex) {
       google.script.run
-        .withSuccessHandler((personas) => {
-          personas.forEach(persona => {
+        .withSuccessHandler((todosHorarios) => {
+          // Filtrar solo las personas que han confirmado asistencia
+          const asistentes = todosHorarios.filter(persona => persona.asistencia);
+          
+          asistentes.forEach(persona => {
             const checkbox = document.querySelector(`input[data-producto="${productoIndex}"][data-persona="${persona.nombre}"]`);
             if (checkbox) {
               checkbox.checked = true;
@@ -2538,7 +3555,7 @@
             }
           });
         })
-        .getPersonasConfiguracion();
+        .getAllHorarios();
     }
 
     function deseleccionarTodos(productoIndex) {
@@ -2657,7 +3674,7 @@
               <h5>Seleccionar personas:</h5>
               <div class="selection-buttons">
                 <button type="button" class="btn-select-all" onclick="seleccionarTodos(${originalIndex})">
-                  Todos
+                  Todos (asistentes)
                 </button>
                 <button type="button" class="btn-select-all secondary" onclick="deseleccionarTodos(${originalIndex})">
                   Ninguno
@@ -2727,9 +3744,102 @@
 
       <div class="card">
         <ul class="tabs">
-          <li class="tab col s6"><a href="#compras-tab" class="active">Mis Compras</a></li>
-          <li class="tab col s6"><a href="#resumen-tab">Resumen</a></li>
+          <li class="tab col s4"><a href="#horarios-tab" class="active">Horarios</a></li>
+          <li class="tab col s4"><a href="#compras-tab">Mis Compras</a></li>
+          <li class="tab col s4"><a href="#resumen-tab">Resumen</a></li>
         </ul>
+
+        <div id="horarios-tab">
+          <div class="card-content">
+            <div class="card-title">
+              <i class="material-icons">schedule</i>
+              <span>Horarios Casa Rural (19-21 Septiembre)</span>
+            </div>
+
+            <!-- Botón de confirmación de asistencia -->
+            <div class="asistencia-section">
+              <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-content">
+                  <div class="card-title">
+                    <i class="material-icons">event_available</i>
+                    <span>Confirmar Asistencia</span>
+                  </div>
+                  <div style="text-align: center; padding: 1rem;">
+                    <label style="display: flex; align-items: center; justify-content: center; gap: 1rem; cursor: pointer; font-size: 1.1rem; font-weight: 500;">
+                      <input type="checkbox" id="confirmar-asistencia" class="filled-in" onchange="toggleAsistencia()">
+                      <span for="confirmar-asistencia">Confirmo mi asistencia a la casa rural</span>
+                    </label>
+                    <div id="contador-asistencia" style="margin-top: 1rem; color: #2a3864; font-weight: 600;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botón para introducir/modificar datos de viaje -->
+            <div class="viaje-section">
+              <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-content">
+                  <div class="card-title">
+                    <i class="material-icons">directions</i>
+                    <span>Datos de Viaje</span>
+                  </div>
+                  <div style="text-align: center; padding: 1rem;">
+                    <button id="btn-datos-viaje" class="btn-grupo" onclick="mostrarModalViajeConCarga()" style="padding: 0.75rem 2rem; font-size: 1rem;">
+                      <i class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">edit</i>
+                      Introducir/Modificar Datos de Viaje
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Resumen de horarios de viaje -->
+            <div id="resumen-viaje" class="card" style="margin-bottom: 1.5rem; display: none;">
+              <div class="card-content">
+                <div class="card-title">
+                  <i class="material-icons">summarize</i>
+                  <span>Mi Itinerario de Viaje</span>
+                </div>
+                <div id="viaje-resumen-content"></div>
+              </div>
+            </div>
+
+            <!-- Horario general de llegadas -->
+            <div class="horario-general-section">
+              <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-content">
+                  <div class="card-title">
+                    <i class="material-icons">groups</i>
+                    <span>Horario de Llegadas - Todos los Participantes</span>
+                  </div>
+                  <div id="horario-general-content">
+                    <div class="loading">Cargando horarios...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabla resumen -->
+            <div class="tabla-resumen-section">
+              <div class="card">
+                <div class="card-content">
+                  <div class="card-title">
+                    <i class="material-icons">table_chart</i>
+                    <span>Tabla Resumen de Asistencia y Llegadas</span>
+                  </div>
+                  <div style="margin-bottom: 1rem; text-align: center;">
+                    <button id="btn-mostrar-no-confirmados" class="btn-grupo secondary" disabled onclick="toggleMostrarNoConfirmados()" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                      Mostrar gente que no ha confirmado asistencia
+                    </button>
+                  </div>
+                  <div id="tabla-resumen-content">
+                    <div class="loading">Cargando datos...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div id="compras-tab">
           <div class="card-content">
