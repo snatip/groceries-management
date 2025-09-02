@@ -2301,6 +2301,37 @@
       element.classList.toggle('expanded');
     }
 
+    function repararHorarios() {
+      if (confirm('¿Estás seguro de que quieres reparar la hoja de horarios? Esto corregirá problemas en la estructura de datos.')) {
+        google.script.run
+          .withSuccessHandler((resultado) => {
+            alert(resultado.message);
+            if (resultado.success) {
+              // Recargar los datos después de la reparación
+              cargarHorarios();
+              cargarTablaResumen();
+            }
+          })
+          .withFailureHandler((error) => {
+            alert('Error al reparar hoja de horarios: ' + error.message);
+          })
+          .repararHojaHorarios();
+      }
+    }
+
+    function debugHorarios() {
+      google.script.run
+        .withSuccessHandler((debugInfo) => {
+          console.log('Debug Info:', debugInfo);
+          alert('Información de depuración:\n\n' + JSON.stringify(debugInfo, null, 2));
+        })
+        .withFailureHandler((error) => {
+          console.error('Error en debug:', error);
+          alert('Error al obtener información de depuración: ' + error.message);
+        })
+        .debugHojaHorarios();
+    }
+
     // === FUNCIONES PARA GESTIÓN DE GRUPOS ===
 
     function mostrarModalCrearGrupo() {
@@ -2665,7 +2696,7 @@
                   
                   <div class="modal-buttons">
                     <button type="button" class="btn-modal btn-secondary" onclick="cerrarModal('modal-viaje')">Cancelar</button>
-                    <button type="submit" class="btn-modal btn-primary">Guardar Datos</button>
+                    <button type="submit" class="btn-modal btn-primary" id="btn-guardar-datos-viaje">Guardar Datos</button>
                   </div>
                 </form>
               </div>
@@ -2825,7 +2856,7 @@
               
               <div class="modal-buttons">
                 <button type="button" class="btn-modal btn-secondary" onclick="cerrarModal('modal-viaje')">Cancelar</button>
-                <button type="submit" class="btn-modal btn-primary">Guardar Datos</button>
+                <button type="submit" class="btn-modal btn-primary" id="btn-guardar-datos-viaje">Guardar Datos</button>
               </div>
             </form>
           </div>
@@ -2841,6 +2872,10 @@
     }
 
     function guardarDatosViaje() {
+      const btnGuardar = document.getElementById('btn-guardar-datos-viaje');
+      btnGuardar.disabled = true;
+      btnGuardar.innerHTML = '<i class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">hourglass_empty</i>Guardando...';
+      
       const datosViaje = {
         trayecto1: {
           salida: document.getElementById('trayecto1-salida').value,
@@ -2874,9 +2909,13 @@
           } else {
             alert('Error al guardar datos: ' + resultado.message);
           }
+          btnGuardar.disabled = false;
+          btnGuardar.innerHTML = 'Guardar Datos';
         })
         .withFailureHandler((error) => {
           alert('Error al guardar datos de viaje: ' + error.message);
+          btnGuardar.disabled = false;
+          btnGuardar.innerHTML = 'Guardar Datos';
         })
         .saveDatosViaje(usuarioInfo.nombre, datosViaje);
     }
@@ -3015,6 +3054,7 @@
       
       google.script.run
         .withSuccessHandler((todosHorarios) => {
+          console.log('Datos recibidos en cargarHorarioGeneral:', todosHorarios);
           if (!todosHorarios || todosHorarios.length === 0) {
             horarioDiv.innerHTML = '<div class="empty-state">No hay datos de horarios disponibles</div>';
             return;
@@ -3105,8 +3145,9 @@
           html += '</div>';
           horarioDiv.innerHTML = html;
         })
-        .withFailureHandler(() => {
-          horarioDiv.innerHTML = '<div class="loading">Error al cargar horarios</div>';
+        .withFailureHandler((error) => {
+          console.error('Error en cargarHorarioGeneral:', error);
+          horarioDiv.innerHTML = '<div class="loading">Error al cargar horario general</div>';
         })
         .getAllHorarios();
     }
@@ -3134,6 +3175,7 @@
       
       google.script.run
         .withSuccessHandler((todosHorarios) => {
+          console.log('Datos recibidos en cargarTablaResumen:', todosHorarios);
           if (!todosHorarios || todosHorarios.length === 0) {
             tablaDiv.innerHTML = '<div class="empty-state">No hay datos disponibles</div>';
             return;
@@ -3176,11 +3218,11 @@
               '<i class="material-icons" style="color: #087C45; font-size: 18px;">check_circle</i>' : 
               '<i class="material-icons" style="color: #ccc; font-size: 18px;">cancel</i>';
 
-            const nombreConNota = persona.notas ? 
+            const nombreConNota = persona.datosViaje?.notas ? 
               `<span style="cursor: help; border-bottom: 1px dotted #2a3864; position: relative;" 
-                    onmouseover="mostrarNota(event, '${persona.notas.replace(/'/g, "\\'")}', this)"
+                    onmouseover="mostrarNota(event, '${persona.datosViaje.notas.replace(/'/g, "\\'")}', this)"
                     onmouseout="ocultarNota()"
-                    onclick="mostrarNota(event, '${persona.notas.replace(/'/g, "\\'")}', this)">
+                    onclick="mostrarNota(event, '${persona.datosViaje.notas.replace(/'/g, "\\'")}', this)">
                     ${persona.nombre}
                    </span>` : 
               persona.nombre;
@@ -3213,7 +3255,8 @@
           html += '</tbody></table></div>';
           tablaDiv.innerHTML = html;
         })
-        .withFailureHandler(() => {
+        .withFailureHandler((error) => {
+          console.error('Error en cargarTablaResumen:', error);
           tablaDiv.innerHTML = '<div class="loading">Error al cargar tabla resumen</div>';
         })
         .getAllHorarios();
@@ -3787,6 +3830,14 @@
                     <button id="btn-datos-viaje" class="btn-grupo" onclick="mostrarModalViajeConCarga()" style="padding: 0.75rem 2rem; font-size: 1rem;">
                       <i class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">edit</i>
                       Introducir/Modificar Datos de Viaje
+                    </button>
+                  </div>
+                  <div style="text-align: center; padding: 1rem;">
+                    <button onclick="debugHorarios()" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem;">
+                      Debug Horarios
+                    </button>
+                    <button onclick="repararHorarios()" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                      Reparar Horarios
                     </button>
                   </div>
                 </div>
