@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- Materialize JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  
 
   <style>
     body { 
@@ -355,7 +356,7 @@
       border-radius: 0 0 15px 15px;
       max-height: 200px;
       overflow-y: auto;
-      z-index: 10000;
+      z-index: 2500;
       display: none;
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
@@ -1123,7 +1124,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 10000;
+      z-index: 2500;
       backdrop-filter: blur(5px);
     }
 
@@ -1380,9 +1381,16 @@
 
     /* Estado de carga */
     .btn-grupo.loading {
-      opacity: 0.7;
-      cursor: wait;
-      pointer-events: none; /* evita más clics mientras carga */
+      display: relative;
+    }
+
+    .btn-grupo.loading .material-icons {
+      vertical-align: middle;
+      margin: 0;
+    }
+
+    .btn-grupo.loading {
+      text-align: center;
     }
 
     /* === ESTILOS PARA NUEVA COMPRA === */
@@ -1820,7 +1828,7 @@
         userAvatar.innerHTML = `<div class="initials">${usuarioInfo.iniciales}</div>`;
       }
       
-      welcomeName.textContent = `¡Hola, ${usuarioInfo.nombre}!`;
+      welcomeName.textContent = `🥒 ¡Hola, ${usuarioInfo.nombre}! 🥒`;
       
       // Calcular gastos totales
       google.script.run
@@ -1886,7 +1894,7 @@
         setTimeout(() => {
           btnCrearGrupo.classList.remove('loading');
           btnCrearGrupo.textContent = 'Crear Grupo';
-        }, 10000); // Aumentado a 10 segundos por lentitud
+        }, 2500); // Aumentado a 10 segundos por lentitud
       };
       //btnCrearGrupo.onclick = mostrarModalCrearGrupo;
       
@@ -1903,7 +1911,7 @@
         setTimeout(() => {
           btnUnirseGrupo.classList.remove('loading');
           btnUnirseGrupo.textContent = grupoActual ? 'Cambiar Grupo' : 'Unirse a Grupo';
-        }, 10000); // Aumentado a 10 segundos por lentitud
+        }, 2500); // Aumentado a 10 segundos por lentitud
       };
       //btnUnirseGrupo.onclick = mostrarModalUnirseGrupo;
       
@@ -2079,12 +2087,13 @@
           this.classList.add('loading');
           this.innerHTML = '<i class="material-icons">hourglass_empty</i>Cargando...';
           
+          mostrarModalNuevaCompra();
+
           // Mostrar el modal inmediatamente y restaurar el botón
           setTimeout(() => {
-            mostrarModalNuevaCompra();
             this.classList.remove('loading');
             this.innerHTML = '<i class="material-icons">add</i>Nueva Compra';
-          }, 10000); // Aumentado a 10 segundos por lentitud
+          }, 2500); // Aumentado a 10 segundos por lentitud
         };
         
         const selectContainer = document.querySelector('#compra-select').parentElement;
@@ -2244,11 +2253,8 @@
         const totalCompra = totalesPorCompra[compra] || 0;
         
         // Solo mostrar personas con gastos > 0
-        //console.log("a")
-        //console.log(compraData.map(x => [x.persona, x.total]));
+
         const personasConGastos = compraData.filter(item => item.total > 0);
-        //console.log(compraData.map(x => [x.persona, x.total]));
-        //console.log("b")
 
         if (personasConGastos.length === 0) return; // Skip compras sin gastos
         
@@ -2301,36 +2307,7 @@
       element.classList.toggle('expanded');
     }
 
-    function repararHorarios() {
-      if (confirm('¿Estás seguro de que quieres reparar la hoja de horarios? Esto corregirá problemas en la estructura de datos.')) {
-        google.script.run
-          .withSuccessHandler((resultado) => {
-            alert(resultado.message);
-            if (resultado.success) {
-              // Recargar los datos después de la reparación
-              cargarHorarios();
-              cargarTablaResumen();
-            }
-          })
-          .withFailureHandler((error) => {
-            alert('Error al reparar hoja de horarios: ' + error.message);
-          })
-          .repararHojaHorarios();
-      }
-    }
-
-    function debugHorarios() {
-      google.script.run
-        .withSuccessHandler((debugInfo) => {
-          console.log('Debug Info:', debugInfo);
-          alert('Información de depuración:\n\n' + JSON.stringify(debugInfo, null, 2));
-        })
-        .withFailureHandler((error) => {
-          console.error('Error en debug:', error);
-          alert('Error al obtener información de depuración: ' + error.message);
-        })
-        .debugHojaHorarios();
-    }
+  
 
     // === FUNCIONES PARA GESTIÓN DE GRUPOS ===
 
@@ -2547,12 +2524,13 @@
       btn.classList.add('loading');
       btn.innerHTML = '<i class="material-icons">hourglass_empty</i>Cargando...';
       
+      mostrarModalViaje();
+
       // Mostrar el modal después de un breve tiempo para mostrar el estado de carga
-      setTimeout(() => {
-        mostrarModalViaje();
+      setTimeout(() => {  
         btn.classList.remove('loading');
         btn.innerHTML = '<i class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">edit</i>Introducir/Modificar Datos de Viaje';
-      }, 10000); // 10 segundos por lentitud
+      }, 2500); // 10 segundos por lentitud
     }
 
     function mostrarModalViaje() {
@@ -2704,6 +2682,17 @@
           `;
           
           document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+          if (datosViaje) {
+            for (let i = 1; i <= 4; i++) {
+              const trayectoKey = `trayecto${i}`;
+              const selectElement = document.getElementById(`${trayectoKey}-transporte`);
+              
+              if (selectElement && datosViaje[trayectoKey]?.transporte) {
+                selectElement.value = datosViaje[trayectoKey].transporte;
+              }
+            }
+          }
           
           document.getElementById('form-viaje').onsubmit = function(e) {
             e.preventDefault();
@@ -2878,26 +2867,26 @@
       
       const datosViaje = {
         trayecto1: {
-          salida: document.getElementById('trayecto1-salida').value,
-          llegada: document.getElementById('trayecto1-llegada').value,
-          transporte: document.getElementById('trayecto1-transporte').value
+          salida: document.getElementById('trayecto1-salida')?.value || '',
+          llegada: document.getElementById('trayecto1-llegada')?.value || '',
+          transporte: document.getElementById('trayecto1-transporte')?.value || ''
         },
         trayecto2: {
-          salida: document.getElementById('trayecto2-salida').value,
-          llegada: document.getElementById('trayecto2-llegada').value,
-          transporte: document.getElementById('trayecto2-transporte').value
+          salida: document.getElementById('trayecto2-salida')?.value || '',
+          llegada: document.getElementById('trayecto2-llegada')?.value || '',
+          transporte: document.getElementById('trayecto2-transporte')?.value || ''
         },
         trayecto3: {
-          salida: document.getElementById('trayecto3-salida').value,
-          llegada: document.getElementById('trayecto3-llegada').value,
-          transporte: document.getElementById('trayecto3-transporte').value
+          salida: document.getElementById('trayecto3-salida')?.value || '',
+          llegada: document.getElementById('trayecto3-llegada')?.value || '',
+          transporte: document.getElementById('trayecto3-transporte')?.value || ''
         },
         trayecto4: {
-          salida: document.getElementById('trayecto4-salida').value,
-          llegada: document.getElementById('trayecto4-llegada').value,
-          transporte: document.getElementById('trayecto4-transporte').value
+          salida: document.getElementById('trayecto4-salida')?.value || '',
+          llegada: document.getElementById('trayecto4-llegada')?.value || '',
+          transporte: document.getElementById('trayecto4-transporte')?.value || ''
         },
-        notas: document.getElementById('notas-viaje').value.trim()
+        notas: document.getElementById('notas-viaje')?.value?.trim() || ''
       };
 
       google.script.run
@@ -2988,12 +2977,30 @@
         })
         .getDatosViaje(usuarioInfo.nombre);
 
-      // Cargar horario general de todos
-      cargarHorarioGeneral();
-
       // Cargar tabla resumen
       cargarTablaResumen();
     }
+
+    function depurarHoras(horaRecibida, contexto) {
+      console.log(`=== DEPURACIÓN DE HORA ===`);
+      console.log(`Contexto: ${contexto}`);
+      console.log(`Hora recibida:`, horaRecibida);
+      console.log(`Tipo de dato:`, typeof horaRecibida);
+      
+      if (typeof horaRecibida === 'string') {
+        console.log(`Hora como string: "${horaRecibida}"`);
+        const fecha = new Date(horaRecibida);
+        console.log(`Convertida a Date:`, fecha);
+        console.log(`Horas extraídas:`, fecha.getHours(), fecha.getMinutes());
+      } else if (horaRecibida instanceof Date) {
+        console.log(`Es un objeto Date`);
+        console.log(`UTC Hours:`, horaRecibida.getUTCHours(), horaRecibida.getUTCMinutes());
+        console.log(`Local Hours:`, horaRecibida.getHours(), horaRecibida.getMinutes());
+      }
+      
+      console.log(`========================`);
+    }
+
 
     function mostrarResumenViaje(datosViaje) {
       const resumenDiv = document.getElementById('resumen-viaje');
@@ -3049,108 +3056,6 @@
       }
     }
 
-    function cargarHorarioGeneral() {
-      const horarioDiv = document.getElementById('horario-general-content');
-      
-      google.script.run
-        .withSuccessHandler((todosHorarios) => {
-          console.log('Datos recibidos en cargarHorarioGeneral:', todosHorarios);
-          if (!todosHorarios || todosHorarios.length === 0) {
-            horarioDiv.innerHTML = '<div class="empty-state">No hay datos de horarios disponibles</div>';
-            return;
-          }
-
-          // Crear horario tipo calendar para los 3 días
-          const dias = [
-            { fecha: '2024-09-19', nombre: 'Jueves 19 - Llegadas', horaInicio: '08:00', horaFin: '23:59' },
-            { fecha: '2024-09-20', nombre: 'Viernes 20 - Día completo', horaInicio: '00:00', horaFin: '23:59' },
-            { fecha: '2024-09-21', nombre: 'Sábado 21 - Salidas', horaInicio: '00:00', horaFin: '23:59' }
-          ];
-
-          let html = '<div style="display: grid; gap: 1.5rem;">';
-          
-          dias.forEach(dia => {
-            html += `
-              <div class="dia-horario">
-                <h4 style="color: #2a3864; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e0e0e0;">${dia.nombre}</h4>
-                <div class="timeline-horario" style="position: relative; padding-left: 2rem;">
-            `;
-
-            // Filtrar eventos para este día y ordenar por hora
-            const eventosDia = [];
-            todosHorarios.forEach(persona => {
-              if (persona.asistencia && persona.datosViaje) {
-                // Añadir eventos de llegada (trayecto2)
-                if (persona.datosViaje.trayecto2?.llegada) {
-                  eventosDia.push({
-                    hora: persona.datosViaje.trayecto2.llegada,
-                    tipo: 'llegada',
-                    persona: persona.nombre,
-                    transporte: persona.datosViaje.trayecto2.transporte,
-                    foto: persona.foto
-                  });
-                }
-                // Añadir eventos de salida (trayecto3)
-                if (persona.datosViaje.trayecto3?.salida) {
-                  eventosDia.push({
-                    hora: persona.datosViaje.trayecto3.salida,
-                    tipo: 'salida',
-                    persona: persona.nombre,
-                    transporte: persona.datosViaje.trayecto3.transporte,
-                    foto: persona.foto
-                  });
-                }
-              }
-            });
-
-            // Ordenar eventos por hora
-            eventosDia.sort((a, b) => a.hora.localeCompare(b.hora));
-
-            // Mostrar eventos
-            if (eventosDia.length === 0) {
-              html += '<div style="color: #666; font-style: italic;">No hay eventos programados para este día</div>';
-            } else {
-              eventosDia.forEach((evento, index) => {
-                const esLlegada = evento.tipo === 'llegada';
-                const icono = esLlegada ? 'flight_land' : 'flight_takeoff';
-                const color = esLlegada ? '#087C45' : '#d41050';
-                
-                html += `
-                  <div class="evento-horario" style="position: relative; margin-bottom: 1rem; padding-left: 1rem;">
-                    <div style="position: absolute; left: -1.5rem; top: 0; width: 12px; height: 12px; background: ${color}; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px ${color};"></div>
-                    <div style="background: white; padding: 0.75rem; border-radius: 8px; border-left: 3px solid ${color}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                          <i class="material-icons" style="color: ${color}; font-size: 18px;">${icono}</i>
-                          <strong style="color: #2c3e50;">${evento.hora}</strong>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                          ${getPersonaAvatar(evento.persona, evento.foto, 20)}
-                          <span style="font-weight: 500; color: #2c3e50;">${evento.persona}</span>
-                        </div>
-                      </div>
-                      <div style="color: #666; font-size: 0.9rem;">
-                        ${esLlegada ? 'Llega a Talavera' : 'Sale de Talavera'}
-                        ${evento.transporte ? ` • ${evento.transporte}` : ''}
-                      </div>
-                    </div>
-                  </div>
-                `;
-              });
-            }
-
-            html += '</div></div>';
-          });
-
-          html += '</div>';
-          horarioDiv.innerHTML = html;
-        })
-        .withFailureHandler((error) => {
-          console.error('Error en cargarHorarioGeneral:', error);
-          horarioDiv.innerHTML = '<div class="loading">Error al cargar horario general</div>';
-        })
-        .getAllHorarios();
-    }
 
     // Variable global para controlar si se muestran no confirmados
     let mostrarNoConfirmados = false;
@@ -3175,14 +3080,13 @@
       
       google.script.run
         .withSuccessHandler((todosHorarios) => {
-          console.log('Datos recibidos en cargarTablaResumen:', todosHorarios);
           if (!todosHorarios || todosHorarios.length === 0) {
             tablaDiv.innerHTML = '<div class="empty-state">No hay datos disponibles</div>';
             return;
           }
 
           // Filtrar personas según el estado de mostrarNoConfirmados
-          const personasFiltradas = todosHorarios.filter(persona => 
+          let personasFiltradas = todosHorarios.filter(persona => 
             mostrarNoConfirmados || persona.asistencia
           );
 
@@ -3208,31 +3112,66 @@
                     <th style="padding: 0.75rem; text-align: center;">Madrid → Talavera</th>
                     <th style="padding: 0.75rem; text-align: center;">Talavera → Madrid</th>
                     <th style="padding: 0.75rem; text-align: center;">Madrid → Origen</th>
+                    <th style="padding: 0.75rem; text-align: center;">Notas</th>
                   </tr>
                 </thead>
                 <tbody>
           `;
+
+          // Ordenar personas si hay un criterio de ordenamiento
+          if (window.ordenActual === 'predeterminado') {
+            // Orden alfabético
+            personasFiltradas.sort((a, b) => {
+              if (window.ordenDireccion === 'asc') {
+                return a.nombre.localeCompare(b.nombre);
+              } else {
+                return b.nombre.localeCompare(a.nombre);
+              }
+            });
+          } else if (window.ordenActual && window.ordenCampo) {
+            // Orden por horarios - campos vacíos siempre al final
+            personasFiltradas.sort((a, b) => {
+              const horaA = a.datosViaje?.[window.ordenActual]?.[window.ordenCampo] || '';
+              const horaB = b.datosViaje?.[window.ordenActual]?.[window.ordenCampo] || '';
+              
+              // Lógica para poner vacíos siempre al final
+              const aEstaVacio = !horaA;
+              const bEstaVacio = !horaB;
+              
+              if (aEstaVacio && !bEstaVacio) {
+                // Si A está vacío y B no, A va al final (return 1)
+                return 1;
+              } else if (!aEstaVacio && bEstaVacio) {
+                // Si B está vacío y A no, B va al final (return -1)
+                return -1;
+              } else if (aEstaVacio && bEstaVacio) {
+                // Si ambos están vacíos, mantener orden relativo (return 0)
+                return 0;
+              } else {
+                // Si ninguno está vacío, comparar normalmente
+                if (window.ordenDireccion === 'asc') {
+                  return horaA.localeCompare(horaB);
+                } else {
+                  return horaB.localeCompare(horaA);
+                }
+              }
+            });
+          }
 
           personasFiltradas.forEach(persona => {
             const asistenciaIcono = persona.asistencia ? 
               '<i class="material-icons" style="color: #087C45; font-size: 18px;">check_circle</i>' : 
               '<i class="material-icons" style="color: #ccc; font-size: 18px;">cancel</i>';
 
-            const nombreConNota = persona.datosViaje?.notas ? 
-              `<span style="cursor: help; border-bottom: 1px dotted #2a3864; position: relative;" 
-                    onmouseover="mostrarNota(event, '${persona.datosViaje.notas.replace(/'/g, "\\'")}', this)"
-                    onmouseout="ocultarNota()"
-                    onclick="mostrarNota(event, '${persona.datosViaje.notas.replace(/'/g, "\\'")}', this)">
-                    ${persona.nombre}
-                   </span>` : 
-              persona.nombre;
+            const notas = persona.datosViaje?.notas || 
+              '<span style="color: #999;">—</span>';
 
             html += `
               <tr style="border-bottom: 1px solid #e0e0e0;">
                 <td style="padding: 0.75rem;">
                   <div style="display: flex; align-items: center; gap: 0.5rem;">
                     ${getPersonaAvatar(persona.nombre, persona.foto, 24)}
-                    <span style="font-weight: 500;">${nombreConNota}</span>
+                    <span style="font-weight: 500;">${persona.nombre}</span>
                   </div>
                 </td>
                 <td style="padding: 0.75rem; text-align: center;">${asistenciaIcono}</td>
@@ -3248,6 +3187,11 @@
                 <td style="padding: 0.75rem; text-align: center; font-size: 0.9rem;">
                   ${formatearCeldaTrayecto(persona.datosViaje?.trayecto4)}
                 </td>
+                <td style="padding: 0.75rem; text-align: center; font-size: 0.85rem; max-width: 200px; word-wrap: break-word;">
+                  <div style="color: #2c3e50; background: #f8f9ff; padding: 0.25rem 0.5rem; border-radius: 4px; border-left: 3px solid #2a3864;">
+                    ${notas}
+                  </div>
+                </td>
               </tr>
             `;
           });
@@ -3260,6 +3204,27 @@
           tablaDiv.innerHTML = '<div class="loading">Error al cargar tabla resumen</div>';
         })
         .getAllHorarios();
+    }
+
+    // Función para ordenar la tabla
+    function ordenarTabla(trayecto, campo = 'salida') {
+      if (trayecto === 'predeterminado') {
+        // Orden alfabético
+        window.ordenActual = 'predeterminado';
+        window.ordenCampo = 'nombre';
+        window.ordenDireccion = 'asc';
+      } else if (window.ordenActual === trayecto && window.ordenCampo === campo) {
+        // Cambiar dirección de ordenamiento
+        window.ordenDireccion = window.ordenDireccion === 'asc' ? 'desc' : 'asc';
+      } else {
+        // Nuevo campo de ordenamiento
+        window.ordenActual = trayecto;
+        window.ordenCampo = campo;
+        window.ordenDireccion = 'asc';
+      }
+      
+      // Recargar la tabla con el nuevo ordenamiento
+      cargarTablaResumen();
     }
 
     function getPersonaAvatar(nombre, foto, tamaño) {
@@ -3279,64 +3244,9 @@
       const partes = [];
       if (trayecto.salida) partes.push(`Sale: ${trayecto.salida}`);
       if (trayecto.llegada) partes.push(`Llega: ${trayecto.llegada}`);
-      if (trayecto.transporte) partes.push(trayecto.transporte);
+      if (trayecto.transporte) partes.push(`(En ${trayecto.transporte})`);
 
       return `<div style="color: #2c3e50;">${partes.join('<br>')}</div>`;
-    }
-
-    function mostrarNota(event, nota, elemento) {
-      // Eliminar cualquier tooltip existente
-      ocultarNota();
-      
-      // Crear tooltip
-      const tooltip = document.createElement('div');
-      tooltip.id = 'tooltip-nota';
-      tooltip.style.cssText = `
-        position: absolute;
-        background: #2a3864;
-        color: white;
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        max-width: 300px;
-        z-index: 10000;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        line-height: 1.4;
-      `;
-      tooltip.textContent = nota;
-      
-      // Posicionar tooltip
-      const rect = elemento.getBoundingClientRect();
-      tooltip.style.left = rect.left + 'px';
-      tooltip.style.top = (rect.bottom + 5) + 'px';
-      
-      // Ajustar si se sale de la pantalla
-      setTimeout(() => {
-        const tooltipRect = tooltip.getBoundingClientRect();
-        if (tooltipRect.right > window.innerWidth) {
-          tooltip.style.left = (window.innerWidth - tooltipRect.width - 10) + 'px';
-        }
-        if (tooltipRect.bottom > window.innerHeight) {
-          tooltip.style.top = (rect.top - tooltipRect.height - 5) + 'px';
-        }
-      }, 0);
-      
-      document.body.appendChild(tooltip);
-      
-      // Para móviles, hacer clic para cerrar
-      if (window.innerWidth <= 600) {
-        setTimeout(() => {
-          document.addEventListener('click', ocultarNota);
-        }, 100);
-      }
-    }
-
-    function ocultarNota() {
-      const tooltip = document.getElementById('tooltip-nota');
-      if (tooltip) {
-        tooltip.remove();
-      }
-      document.removeEventListener('click', ocultarNota);
     }
 
     // === FUNCIONES PARA CREAR NUEVA COMPRA ===
@@ -3779,7 +3689,7 @@
             <div class="initials">U</div>
           </div>
           <div class="welcome-info">
-            <h4 id="welcome-name">¡Hola, Usuario!</h4>
+            <h4 id="welcome-name">🥒 ¡Hola, Usuario! 🥒</h4>
             <p id="total-gastos" class="total-gastos">Total gastado: 0.00 €</p>
           </div>
         </div>
@@ -3832,14 +3742,6 @@
                       Introducir/Modificar Datos de Viaje
                     </button>
                   </div>
-                  <div style="text-align: center; padding: 1rem;">
-                    <button onclick="debugHorarios()" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem;">
-                      Debug Horarios
-                    </button>
-                    <button onclick="repararHorarios()" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                      Reparar Horarios
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -3855,21 +3757,6 @@
               </div>
             </div>
 
-            <!-- Horario general de llegadas -->
-            <div class="horario-general-section">
-              <div class="card" style="margin-bottom: 1.5rem;">
-                <div class="card-content">
-                  <div class="card-title">
-                    <i class="material-icons">groups</i>
-                    <span>Horario de Llegadas - Todos los Participantes</span>
-                  </div>
-                  <div id="horario-general-content">
-                    <div class="loading">Cargando horarios...</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <!-- Tabla resumen -->
             <div class="tabla-resumen-section">
               <div class="card">
@@ -3879,8 +3766,17 @@
                     <span>Tabla Resumen de Asistencia y Llegadas</span>
                   </div>
                   <div style="margin-bottom: 1rem; text-align: center;">
-                    <button id="btn-mostrar-no-confirmados" class="btn-grupo secondary" disabled onclick="toggleMostrarNoConfirmados()" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                    <button id="btn-mostrar-no-confirmados" class="btn-grupo secondary" disabled onclick="toggleMostrarNoConfirmados()" style="padding: 0.5rem 1rem; font-size: 0.9rem; margin: 0.25rem;">
                       Mostrar gente que no ha confirmado asistencia
+                    </button>
+                    <button id="btn-ordenar-llegada" class="btn-grupo" onclick="ordenarTabla('trayecto2', 'llegada')" style="padding: 0.5rem 1rem; font-size: 0.9rem; margin: 0.25rem;">
+                      Ordenar por llegada a Talavera
+                    </button>
+                    <button id="btn-ordenar-salida" class="btn-grupo" onclick="ordenarTabla('trayecto3', 'salida')" style="padding: 0.5rem 1rem; font-size: 0.9rem; margin: 0.25rem;">
+                      Ordenar por salida de Talavera
+                    </button>
+                    <button id="btn-ordenar-predeterminado" class="btn-grupo" onclick="ordenarTabla('predeterminado')" style="padding: 0.5rem 1rem; font-size: 0.9rem; margin: 0.25rem;">
+                      Orden alfabético
                     </button>
                   </div>
                   <div id="tabla-resumen-content">
