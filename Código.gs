@@ -778,7 +778,7 @@ function getResumenData() {
  */
 function crearHojaResumenConFormulas() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheets = ss.getSheets().filter(s => s.getName() !== RESUMEN_SHEET && s.getName() !== DATOS_SHEET && s.getName() !== GRUPOS_SHEET);
+  const sheets = ss.getSheets().filter(s => s.getName() !== RESUMEN_SHEET && s.getName() !== DATOS_SHEET && s.getName() !== GRUPOS_SHEET && s.getName() !== HORARIOS_SHEET);
   
   const oldResumenSheet = ss.getSheetByName(RESUMEN_SHEET);
   if (oldResumenSheet) {
@@ -1040,7 +1040,7 @@ function saveAsistencia(nombre, asistio) {
       if (personaConfig) {
         const newRow = [nombre, asistio];
         // Añadir celdas vacías para los trayectos y notas
-        for (let i = 0; i < 13; i++) {
+        for (let i = 0; i < 14; i++) {
           newRow.push("");
         }
         horariosSheet.appendRow(newRow);
@@ -1141,7 +1141,8 @@ function saveDatosViaje(nombre, datosViaje) {
           datosViaje.trayecto3.transporte || "",
           datosViaje.trayecto4.salida || "",
           datosViaje.trayecto4.llegada || "",
-          datosViaje.trayecto4.transporte || ""
+          datosViaje.trayecto4.transporte || "",
+          datosViaje.notas || ""
         );
         
         horariosSheet.appendRow(newRow);
@@ -1171,6 +1172,9 @@ function saveDatosViaje(nombre, datosViaje) {
       horariosSheet.getRange(rowNum, 12).setValue(datosViaje.trayecto4.salida || "");
       horariosSheet.getRange(rowNum, 13).setValue(datosViaje.trayecto4.llegada || "");
       horariosSheet.getRange(rowNum, 14).setValue(datosViaje.trayecto4.transporte || "");
+      
+      // Notas
+      horariosSheet.getRange(rowNum, 15).setValue(datosViaje.notas || "");
     }
     
     return { success: true, message: "Datos de viaje guardados correctamente" };
@@ -1211,7 +1215,8 @@ function getDatosViaje(nombre) {
             salida: row[11] || "",
             llegada: row[12] || "",
             transporte: row[13] || ""
-          }
+          },
+          notas: row[14] || ""
         };
       }
     }
@@ -1224,13 +1229,148 @@ function getDatosViaje(nombre) {
 }
 
 /**
- * Obtiene todos los horarios de todas las personas
+ * Función para reparar la estructura de la hoja de horarios
  */
+function repararHojaHorarios() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let horariosSheet = ss.getSheetByName(HORARIOS_SHEET);
+    
+    if (!horariosSheet) {
+      // Crear la hoja si no existe
+      horariosSheet = ss.insertSheet(HORARIOS_SHEET);
+      
+      // Configurar encabezados
+      const headers = [
+        "Nombre", 
+        "Asistencia", 
+        "Trayecto1_Salida", 
+        "Trayecto1_Llegada", 
+        "Trayecto1_Transporte",
+        "Trayecto2_Salida", 
+        "Trayecto2_Llegada", 
+        "Trayecto2_Transporte",
+        "Trayecto3_Salida", 
+        "Trayecto3_Llegada", 
+        "Trayecto3_Transporte",
+        "Trayecto4_Salida", 
+        "Trayecto4_Llegada", 
+        "Trayecto4_Transporte",
+        "Notas"
+      ];
+      
+      horariosSheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      horariosSheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
+      horariosSheet.getRange(1, 1, 1, headers.length).setBackground("#4285f4");
+      horariosSheet.getRange(1, 1, 1, headers.length).setFontColor("white");
+      
+      return { success: true, message: "Hoja de horarios creada correctamente" };
+    }
+    
+    const data = horariosSheet.getDataRange().getValues();
+    const expectedCols = 15;
+    let reparaciones = 0;
+    
+    // Verificar y reparar cada fila
+    for (let i = 1; i < data.length; i++) {
+      if (!data[i] || data[i].length !== expectedCols) {
+        // Crear una nueva fila con la longitud correcta
+        const newRow = new Array(expectedCols).fill("");
+        
+        // Copiar datos existentes
+        if (data[i]) {
+          for (let j = 0; j < Math.min(data[i].length, expectedCols); j++) {
+            newRow[j] = data[i][j];
+          }
+        }
+        
+        // Reemplazar la fila
+        horariosSheet.getRange(i + 1, 1, 1, expectedCols).setValues([newRow]);
+        reparaciones++;
+      }
+    }
+    
+    return { 
+      success: true, 
+      message: `Hoja reparada correctamente. ${reparaciones} filas reparadas.`,
+      reparaciones: reparaciones
+    };
+    
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+}
+
+/**
+ * Función de depuración para verificar la estructura de la hoja de horarios
+ */
+function debugHojaHorarios() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const horariosSheet = ss.getSheetByName(HORARIOS_SHEET);
+    
+    if (!horariosSheet) {
+      return { error: "La hoja de horarios no existe", sheetExists: false };
+    }
+    
+    const data = horariosSheet.getDataRange().getValues();
+    const range = horariosSheet.getDataRange();
+    
+    const debugInfo = {
+      sheetName: horariosSheet.getName(),
+      sheetExists: true,
+      totalRows: range.getNumRows(),
+      totalCols: range.getNumColumns(),
+      expectedCols: 15, // Nombre + Asistencia + 12 trayectos + Notas
+      headers: data[0] || [],
+      sampleRows: [],
+      allRowsLength: []
+    };
+
+        // Verificar cada fila
+    for (let i = 0; i < data.length; i++) {
+      debugInfo.allRowsLength.push({
+        row: i + 1,
+        length: data[i] ? data[i].length : 0
+      });
+      
+      // Mostrar primeras 5 filas como muestra
+      if (i > 0 && i < 6) {
+        debugInfo.sampleRows.push({
+          row: i + 1,
+          data: data[i] || [],
+          length: data[i] ? data[i].length : 0
+        });
+      }
+    }
+    
+    // Verificar si hay filas con longitud incorrecta
+    const rowsWithWrongLength = debugInfo.allRowsLength.filter(row => row.length !== debugInfo.expectedCols);
+    if (rowsWithWrongLength.length > 0) {
+      debugInfo.rowsWithWrongLength = rowsWithWrongLength;
+    }
+    
+    return debugInfo;
+  } catch (error) {
+    return { 
+      error: error.message, 
+      stack: error.stack,
+      errorMessage: error.toString()
+    };
+  }
+}
+
 function getAllHorarios() {
   try {
+    console.log('Iniciando getAllHorarios...');
     const horariosSheet = getHojaHorarios();
+    console.log('Hoja de horarios obtenida:', horariosSheet.getName());
+    
     const data = horariosSheet.getDataRange().getValues();
+    console.log('Datos de hoja obtenidos, filas:', data.length);
+    
     const config = cargarConfiguracionPersonas();
+    console.log('Configuración de personas cargada, personas:', config.listaPersonas.length);
     
     const todosHorarios = [];
     
@@ -1247,30 +1387,33 @@ function getAllHorarios() {
       };
       
       for (let i = 1; i < data.length; i++) {
-        if (data[i][0] === nombre) {
+        if (data[i] && data[i][0] === nombre) {
           const row = data[i];
+          console.log('Encontrada persona:', nombre, 'fila:', i + 1, 'longitud:', row ? row.length : 'null');
+          
           horariosPersona.asistencia = row[1] === true;
           horariosPersona.datosViaje = {
             trayecto1: {
-              salida: row[2] || "",
-              llegada: row[3] || "",
+              salida: formatearHora(row[2]),      // ← CORREGIDO
+              llegada: formatearHora(row[3]),    // ← CORREGIDO
               transporte: row[4] || ""
             },
             trayecto2: {
-              salida: row[5] || "",
-              llegada: row[6] || "",
+              salida: formatearHora(row[5]),      // ← CORREGIDO
+              llegada: formatearHora(row[6]),    // ← CORREGIDO
               transporte: row[7] || ""
             },
             trayecto3: {
-              salida: row[8] || "",
-              llegada: row[9] || "",
+              salida: formatearHora(row[8]),      // ← CORREGIDO
+              llegada: formatearHora(row[9]),    // ← CORREGIDO
               transporte: row[10] || ""
             },
             trayecto4: {
-              salida: row[11] || "",
-              llegada: row[12] || "",
+              salida: formatearHora(row[11]),     // ← CORREGIDO
+              llegada: formatearHora(row[12]),    // ← CORREGIDO
               transporte: row[13] || ""
-            }
+            },
+            notas: row[14] || ""
           };
           break;
         }
@@ -1279,9 +1422,63 @@ function getAllHorarios() {
       todosHorarios.push(horariosPersona);
     });
     
+    console.log('Retornando todosHorarios:', todosHorarios.length, 'personas');
     return todosHorarios;
     
   } catch (error) {
+    console.error('Error en getAllHorarios:', error.message, error.stack);
     return [];
   }
+}
+
+/**
+ * Convierte un objeto Date de Google Sheets a string de hora
+ */
+function formatearHora(dateObj) {
+  if (!dateObj) return "";
+  
+  // Si es un string, devolverlo directamente
+  if (typeof dateObj === 'string') return dateObj;
+  
+  // Si es un objeto Date, formatearlo
+  if (typeof dateObj === 'object' && dateObj.getTime) {
+    try {
+      // Usar Utilities.formatDate para formatear la hora
+      return Utilities.formatDate(dateObj, "GMT", "HH:mm");
+    } catch (e) {
+      // Si falla, intentar formatear manualmente
+      const hours = dateObj.getHours().toString().padStart(2, '0');
+      const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }
+  }
+  
+  // Para cualquier otro caso, devolver string vacío
+  return "";
+}
+
+/**
+ * Convierte un objeto Date de Google Sheets a string de hora
+ */
+function formatearHora(dateObj) {
+  if (!dateObj) return "";
+  
+  // Si es un string, devolverlo directamente
+  if (typeof dateObj === 'string') return dateObj;
+  
+  // Si es un objeto Date, formatearlo
+  if (typeof dateObj === 'object' && dateObj.getTime) {
+    try {
+      // Usar Utilities.formatDate para formatear la hora
+      return Utilities.formatDate(dateObj, "GMT", "HH:mm");
+    } catch (e) {
+      // Si falla, intentar formatear manualmente
+      const hours = dateObj.getHours().toString().padStart(2, '0');
+      const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }
+  }
+  
+  // Para cualquier otro caso, devolver string vacío
+  return "";
 }
