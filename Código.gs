@@ -461,8 +461,13 @@ function limpiarCachePersonas() {
 /**
  * Devuelve el HTML de la aplicación web.
  */
-function doGet(e) {
-  return HtmlService.createHtmlOutputFromFile('index').setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+
+function doGet() {
+  return HtmlService.createTemplateFromFile('index')
+    .evaluate()
+    .setTitle('Casa rural ANEM')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+    .setFaviconUrl("https://em-content.zobj.net/source/whatsapp/420/cucumber_1f952.png");
 }
 
 /**
@@ -1184,6 +1189,7 @@ function saveDatosViaje(nombre, datosViaje) {
   }
 }
 
+
 /**
  * Obtiene los datos de viaje de una persona
  */
@@ -1197,23 +1203,23 @@ function getDatosViaje(nombre) {
         const row = data[i];
         return {
           trayecto1: {
-            salida: row[2] || "",
-            llegada: row[3] || "",
+            salida: formatearHora(row[2]),      // ← CORREGIDO
+            llegada: formatearHora(row[3]),    // ← CORREGIDO
             transporte: row[4] || ""
           },
           trayecto2: {
-            salida: row[5] || "",
-            llegada: row[6] || "",
+            salida: formatearHora(row[5]),      // ← CORREGIDO
+            llegada: formatearHora(row[6]),    // ← CORREGIDO
             transporte: row[7] || ""
           },
           trayecto3: {
-            salida: row[8] || "",
-            llegada: row[9] || "",
+            salida: formatearHora(row[8]),      // ← CORREGIDO
+            llegada: formatearHora(row[9]),    // ← CORREGIDO
             transporte: row[10] || ""
           },
           trayecto4: {
-            salida: row[11] || "",
-            llegada: row[12] || "",
+            salida: formatearHora(row[11]),     // ← CORREGIDO
+            llegada: formatearHora(row[12]),    // ← CORREGIDO
             transporte: row[13] || ""
           },
           notas: row[14] || ""
@@ -1435,32 +1441,7 @@ function getAllHorarios() {
  * Convierte un objeto Date de Google Sheets a string de hora
  */
 function formatearHora(dateObj) {
-  if (!dateObj) return "";
-  
-  // Si es un string, devolverlo directamente
-  if (typeof dateObj === 'string') return dateObj;
-  
-  // Si es un objeto Date, formatearlo
-  if (typeof dateObj === 'object' && dateObj.getTime) {
-    try {
-      // Usar Utilities.formatDate para formatear la hora
-      return Utilities.formatDate(dateObj, "GMT", "HH:mm");
-    } catch (e) {
-      // Si falla, intentar formatear manualmente
-      const hours = dateObj.getHours().toString().padStart(2, '0');
-      const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-      return `${hours}:${minutes}`;
-    }
-  }
-  
-  // Para cualquier otro caso, devolver string vacío
-  return "";
-}
-
-/**
- * Convierte un objeto Date de Google Sheets a string de hora
- */
-function formatearHora(dateObj) {
+  console.log(dateObj);
   if (!dateObj) return "";
   
   // Si es un string, devolverlo directamente
