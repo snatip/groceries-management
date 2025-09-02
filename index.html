@@ -1,0 +1,2769 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Materialize CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <style>
+    body { 
+      padding: 0;
+      background: linear-gradient(135deg, #2a3864 0%, #d41050 100%);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* === ESTILOS PARA LA PANTALLA DE SELECCIÓN DE PERFIL === */
+    .profile-selection {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      padding: 2rem 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-selection::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+    }
+
+    .profile-selection-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .profile-selection h2 {
+      color: white;
+      font-size: 3rem;
+      font-weight: 300;
+      margin-bottom: 3rem;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .profiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .profile-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 1.5rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 2px solid transparent;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .profile-card:hover {
+      transform: translateY(-10px) scale(1.05);
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #2a3864, #d41050);
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .profile-avatar .initials {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .profile-card:hover .profile-avatar {
+      transform: scale(1.1);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .profile-name {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .profile-loading {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+      margin-top: 2rem;
+    }
+
+    /* === ESTILOS PARA LA APLICACIÓN PRINCIPAL === */
+    .main-app {
+      display: none;
+    }
+
+    .main-app.active {
+      display: block;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0.75rem;
+    }
+
+    .header {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
+    }
+
+    .header .profile-switch {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      cursor: pointer;
+      background: rgba(42, 56, 100, 0.1);
+      border-radius: 50%;
+      padding: 0.5rem;
+      transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .header .profile-switch:hover {
+      background: rgba(42, 56, 100, 0.2);
+      transform: scale(1.1);
+    }
+
+    .header .profile-switch i {
+      color: #2a3864;
+      font-size: 1.5rem;
+    }
+
+    .welcome-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .user-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2a3864, #d41050);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .welcome-info {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .welcome-info h4 {
+      margin: 0;
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
+
+    .welcome-info .total-gastos {
+      color: #087C45;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 0.25rem 0 0 0;
+    }
+
+    .header p {
+      color: #7f8c8d;
+      margin: 0.5rem 0 0 0;
+      font-size: 0.95rem;
+    }
+    
+    .card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .card-content {
+      padding: 1rem;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .card-title i {
+      margin-right: 0.5rem;
+      color: #2a3864;
+    }
+
+    .select-container {
+      margin-bottom: 1.5rem;
+    }
+
+    .select-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #2a3864;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .custom-select {
+      position: relative;
+      width: 100%;
+    }
+
+    .select-button {
+      width: 100%;
+      padding: 0.875rem 2.5rem 0.875rem 1rem;
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #2c3e50;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      text-align: left;
+      min-height: 48px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .select-button.disabled {
+      background-color: #f0f0f0;
+      cursor: not-allowed;
+      color: #b0b0b0;
+    }
+    
+    .select-button.disabled .select-arrow {
+      border-top-color: #b0b0b0;
+    }
+
+    .select-button:hover {
+      border-color: #2a3864;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .select-button.active {
+      border-color: #2a3864;
+      box-shadow: 0 0 0 3px rgba(42, 56, 100, 0.1);
+    }
+
+    .select-button .placeholder {
+      color: #7f8c8d;
+    }
+
+    .select-arrow {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #2a3864;
+      transition: transform 0.3s ease;
+    }
+
+    .select-button.active .select-arrow {
+      transform: rotate(180deg);
+    }
+
+    .select-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #2a3864;
+      border-top: none;
+      border-radius: 0 0 15px 15px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 10000;
+      display: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .select-options.show {
+      display: block;
+    }
+
+    .select-option {
+      padding: 0.875rem 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      color: #2c3e50;
+      border-bottom: 1px solid #f5f5f5;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .select-option:last-child {
+      border-bottom: none;
+    }
+
+    .select-option:hover, .select-option:active {
+      background: #f8f9ff;
+    }
+
+    .select-option.selected {
+      background: #2a3864;
+      color: white;
+    }
+
+    .product-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem;
+      margin-bottom: 0.5rem;
+      background: rgba(255,255,255,0.7);
+      border-radius: 12px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      position: relative;
+      min-height: 60px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .product-item:hover, .product-item:active {
+      background: rgba(255,255,255,0.9);
+      border-color: #2a3864;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .product-info {
+      flex: 1;
+      margin-left: 0.75rem;
+      overflow: hidden;
+    }
+
+    .product-name {
+      font-weight: 500;
+      color: #2c3e50;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      word-break: break-word;
+      line-height: 1.3;
+    }
+
+    .product-price {
+      color: #087C45;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+      white-space: nowrap;
+    }
+
+    /* ESTILOS ACTUALIZADOS: Badges de personas con soporte para fotos */
+    .person-badges {
+      display: flex;
+      gap: 0.2rem;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+    }
+
+    .person-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2a3864, #d41050);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+      min-width: 22px;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .person-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .person-badge .initials {
+      position: relative;
+      z-index: 1;
+    }
+
+    .person-badge.has-photo .initials {
+      display: none;
+    }
+
+    .person-badge:hover, .person-badge:active {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Colores alternativos para las badges */
+    .person-badge:nth-child(2n) {
+      background: linear-gradient(135deg, #ff7b7b, #c850c0);
+    }
+    
+    .person-badge:nth-child(3n) {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+    
+    .person-badge:nth-child(4n) {
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      color: #2c3e50;
+    }
+    
+    .person-badge:nth-child(5n) {
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      color: #2c3e50;
+    }
+
+    [type="checkbox"].filled-in:checked + span:not(.lever):after {
+      background-color: #2a3864;
+      border-color: #2a3864;
+    }
+    
+    .tabs {
+      background: transparent;
+      border-bottom: 1px solid #e0e0e0;
+      min-height: 48px;
+    }
+    .tabs .tab {
+      min-height: 48px;
+    }
+    .tabs .tab a {
+      color: #7f8c8d;
+      font-weight: 600;
+      text-transform: none;
+      font-size: 0.95rem;
+      padding: 12px 16px;
+      line-height: 1.4;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tabs .tab a:hover, .tabs .tab a:active, .tabs .tab a.active {
+      color: #2a3864 !important;
+      background: transparent;
+    }
+    .tabs .indicator {
+      background-color: #2a3864 !important;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    .resume-item {
+      background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+      border-radius: 15px;
+      margin-bottom: 1rem;
+      border-left: 4px solid #2a3864;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .resume-item:hover, .resume-item:active {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .resume-item.expanded {
+      cursor: default;
+    }
+
+    .resume-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      user-select: none;
+      min-height: 48px;
+    }
+
+    .resume-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .resume-title i {
+      margin-right: 0.5rem;
+      color: #2a3864;
+      font-size: 1.2rem;
+    }
+
+    .resume-total {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #087C45;
+      background: white;
+      padding: 0.5rem 0.75rem;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .expand-icon {
+      transition: transform 0.3s ease;
+      color: #2a3864;
+      font-size: 1.1rem;
+    }
+
+    .resume-item.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .resume-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      background: rgba(255,255,255,0.3);
+    }
+
+    .resume-item.expanded .resume-details {
+      max-height: none !important;
+      overflow: visible !important;
+      padding: 0 1rem 1rem 1rem;
+    }
+
+    .person-bar {
+      margin-bottom: 0.75rem;
+    }
+
+    .person-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .person-name {
+      font-weight: 500;
+      color: #2c3e50;
+    }
+
+    .person-amount {
+      font-weight: 600;
+      color: #2a3864;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #2a3864 0%, #d41050 100%);
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #2a3864;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #7f8c8d;
+    }
+    
+    .empty-state i {
+      font-size: 4rem;
+      color: #bdbdbd;
+      margin-bottom: 1rem;
+    }
+
+    /* MEDIA QUERIES RESPONSIVAS */
+    @media (max-width: 600px) {
+      .profile-selection h2 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .profiles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .profile-card {
+        padding: 1rem;
+      }
+
+      .profile-avatar {
+        width: 100px;
+        height: 100px;
+      }
+
+      .profile-avatar .initials {
+        font-size: 2rem;
+      }
+
+      .profile-name {
+        font-size: 1.1rem;
+      }
+
+      .container {
+        padding: 0.5rem;
+      }
+
+      .header {
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        border-radius: 15px;
+      }
+
+      .welcome-section {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+      }
+
+      .welcome-info h4 {
+        font-size: 1.2rem;
+        line-height: 1.3;
+      }
+
+      .welcome-info .total-gastos {
+        font-size: 1rem;
+      }
+
+      .header p {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+      }
+
+      .card {
+        border-radius: 12px;
+        margin-bottom: 0.75rem;
+      }
+
+      .card-content {
+        padding: 0.75rem;
+      }
+
+      .card-title {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .select-container {
+        margin-bottom: 1rem;
+      }
+
+      .select-label {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .select-button {
+        padding: 0.75rem 2rem 0.75rem 0.875rem;
+        font-size: 0.9rem;
+        border-radius: 10px;
+        min-height: 44px;
+      }
+
+      .select-option {
+        padding: 0.75rem 0.875rem;
+        font-size: 0.9rem;
+        min-height: 40px;
+      }
+
+      .product-item {
+        padding: 0.75rem;
+        margin-bottom: 0.4rem;
+        border-radius: 10px;
+        min-height: 56px;
+      }
+
+      .product-name {
+        font-size: 0.95rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+      }
+
+      .product-price {
+        font-size: 0.9rem;
+        margin-top: 0.2rem;
+      }
+
+      .person-badges {
+        gap: 0.15rem;
+        margin-top: 0.3rem;
+      }
+
+      .person-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 0.6rem;
+        min-width: 20px;
+      }
+
+      .tabs .tab a {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+      }
+
+      .resume-header {
+        padding: 0.875rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        min-height: auto;
+      }
+
+      .resume-title {
+        font-size: 1rem;
+        width: 100%;
+      }
+
+      .resume-title i {
+        font-size: 1.1rem;
+      }
+
+      .resume-total {
+        font-size: 0.95rem;
+        padding: 0.4rem 0.6rem;
+        align-self: flex-end;
+      }
+
+      .expand-icon {
+        font-size: 1rem;
+      }
+
+      .resume-details {
+        padding-top: 0;
+      }
+
+      .resume-item.expanded .resume-details {
+        padding: 0 0.875rem 0.875rem 0.875rem;
+      }
+
+      .person-info {
+        font-size: 0.85rem;
+        gap: 0.5rem;
+      }
+
+      .person-bar {
+        margin-bottom: 0.6rem;
+      }
+
+      .progress-bar {
+        height: 6px;
+      }
+
+      .loading {
+        padding: 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .empty-state {
+        padding: 2rem 0.5rem;
+      }
+
+      .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .empty-state h6 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .empty-state p {
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+    }
+
+    /* === ESTILOS PARA GESTIÓN DE GRUPOS === */
+    .grupo-info {
+      background: linear-gradient(135deg, #4285f4 0%, black 100%);
+      border: 2px solid #2a3864;
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      margin-left: 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: white;
+      white-space: nowrap;
+    }
+
+    .grupo-actions {
+      margin: 1rem auto;        /* añade espacio arriba y abajo */
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;  /* centra los botones */
+    }
+
+    .grupo-info {
+      text-align: center;       /* centra el texto del grupo */
+      margin-top: 1rem;         /* añade espacio debajo de los botones */
+    }
+
+
+    .btn-grupo {
+      background: linear-gradient(135deg, #2a3864, #4285f4);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-grupo:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(42, 56, 100, 0.3);
+    }
+
+    .btn-grupo.secondary {
+      background: linear-gradient(135deg, #6c757d, #8e9297);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      max-width: 90%;
+      width: 400px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #2a3864;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      border-color: #2a3864;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(42, 56, 100, 0.1);
+    }
+
+    .checkbox-group {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 0.5rem;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      margin-bottom: 0.25rem;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .checkbox-item:hover {
+      background: #f8f9ff;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+
+    .btn-modal {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Estado visual al pulsar (feedback inmediato) */
+    .btn-modal:active {
+      transform: scale(0.96);
+      filter: brightness(0.9);
+    }
+
+    /* Estado de carga */
+    .btn-modal.loading {
+      opacity: 0.7;
+      cursor: wait;
+      pointer-events: none; /* evita más clics mientras carga */
+    }
+
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2a3864, #4285f4);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(42, 56, 100, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f5f5f5;
+      color: #666;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .grupos-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .grupo-item {
+      background: #f8f9ff;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .grupo-item:hover {
+      border-color: #2a3864;
+      background: #f0f4ff;
+    }
+
+    .grupo-item.selected {
+      border-color: #2a3864;
+      background: #2a3864;
+      color: white;
+    }
+
+    .grupo-item h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .grupo-miembros {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    .grupo-item.selected .grupo-miembros {
+      opacity: 0.9;
+    }
+
+    @media (max-width: 400px) {
+      .profiles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 1rem;
+      }
+
+      .profile-avatar {
+        width: 80px;
+        height: 80px;
+      }
+
+      .profile-avatar .initials {
+        font-size: 1.5rem;
+      }
+
+      .container {
+        padding: 0.25rem;
+      }
+
+      .card-content {
+        padding: 0.6rem;
+      }
+
+      .product-item {
+        padding: 0.6rem;
+      }
+
+      .resume-header {
+        padding: 0.75rem;
+      }
+
+      .person-badge {
+        width: 18px;
+        height: 18px;
+        font-size: 0.55rem;
+        min-width: 18px;
+      }
+    }
+
+    @media (max-height: 500px) and (orientation: landscape) {
+      .profile-selection h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .profiles-grid {
+        gap: 1rem;
+      }
+
+      .profile-card {
+        padding: 1rem;
+      }
+
+      .profile-avatar {
+        width: 80px;
+        height: 80px;
+      }
+
+      .header {
+        padding: 0.75rem;
+      }
+
+      .header h4 {
+        font-size: 1.1rem;
+      }
+
+      .header p {
+        font-size: 0.8rem;
+      }
+
+      .container {
+        padding: 0.5rem;
+      }
+    }
+
+    /* Estado visual al pulsar (feedback inmediato) */
+    .btn-grupo:active {
+      transform: scale(0.96);
+      background: linear-gradient(135deg, #1d2748, #2a5ad4); /* más oscuro */
+    }
+
+    .btn-grupo.secondary:active {
+      background: linear-gradient(135deg, #5a6268, #6e7277);
+    }
+
+    /* Estado de carga */
+    .btn-grupo.loading {
+      opacity: 0.7;
+      cursor: wait;
+      pointer-events: none; /* evita más clics mientras carga */
+    }
+
+    /* === ESTILOS PARA NUEVA COMPRA === */
+    .btn-action {
+      background: linear-gradient(135deg, #087C45, #28a745);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(8, 124, 69, 0.3);
+    }
+
+    .btn-action:active {
+      transform: scale(0.96);
+    }
+
+    .btn-action.loading {
+      opacity: 0.7;
+      cursor: wait;
+      pointer-events: none;
+    }
+
+    .productos-lista {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 0.5rem;
+      background: #f8f9fa;
+    }
+
+    .producto-item-form {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      background: white;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .producto-item-form:hover {
+      border-color: #2a3864;
+    }
+
+    .producto-input {
+      flex: 2;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .precio-input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      text-align: right;
+    }
+
+    .btn-remove {
+      background: #dc3545;
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
+    }
+
+    .btn-remove:hover {
+      background: #c82333;
+      transform: scale(1.1);
+    }
+
+    .total-compra {
+      background: linear-gradient(135deg, #087C45, #28a745);
+      color: white;
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 1rem 0;
+      box-shadow: 0 4px 12px rgba(8, 124, 69, 0.2);
+    }
+
+    .asignaciones-container {
+      margin-top: 1rem;
+    }
+
+    .btn-select-all {
+      background: linear-gradient(135deg, #2a3864, #4285f4);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin: 0.5rem 0.25rem;
+      transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-select-all:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(42, 56, 100, 0.3);
+    }
+
+    .btn-select-all.secondary {
+      background: linear-gradient(135deg, #6c757d, #8e9297);
+    }
+
+    .btn-select-all:active {
+      transform: scale(0.96);
+    }
+
+    .producto-saved {
+      background: rgba(40, 167, 69, 0.1);
+      border: 2px solid #28a745;
+    }
+
+    .producto-buttons {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .btn-save-producto {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-save-producto:hover {
+      background: #218838;
+    }
+
+    .btn-edit-producto {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-edit-producto:hover {
+      background: #0056b3;
+    }
+
+    .personas-selection-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .personas-selection-header h5 {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #2c3e50;
+    }
+
+    .selection-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+
+    .grupos-dropdown {
+      position: relative;
+    }
+
+    .grupos-dropdown-content {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border: 2px solid #2a3864;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      min-width: 150px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .grupos-dropdown-content.show {
+      display: block;
+    }
+
+    .grupo-dropdown-item {
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      font-size: 0.8rem;
+      color: #2c3e50;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .grupo-dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .grupo-dropdown-item:hover {
+      background: #f8f9ff;
+    }
+
+    .producto-asignacion {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .producto-asignacion:hover {
+      border-color: #2a3864;
+    }
+
+    .producto-nombre-precio {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .producto-nombre-asign {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 1rem;
+    }
+
+    .producto-precio-asign {
+      color: #087C45;
+      font-weight: 600;
+      background: #f0f8f0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    .personas-checkboxes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .checkbox-persona {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .checkbox-persona:hover {
+      background: #f8f9ff;
+    }
+
+    .checkbox-persona input[type="checkbox"] {
+      margin-right: 0.75rem;
+    }
+
+    .checkbox-persona label {
+      font-weight: 500;
+      color: #2c3e50;
+      cursor: pointer;
+      flex: 1;
+      margin: 0;
+    }
+
+    .resumen-actions {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+  </style>
+
+  <script>
+    let usuario = "";
+    let usuarioInfo = null;
+    let hoja = "";
+    let personasConfiguracion = {};
+    let inicialesPersonas = {};
+
+    function init() {
+      // Cargar configuración de personas
+      google.script.run
+        .withSuccessHandler((personas) => {
+          personasConfiguracion = personas;
+          renderProfileSelection(personas);
+        })
+        .withFailureHandler((error) => {
+          console.error('Error al cargar personas:', error);
+          // Fallback con personas por defecto
+          const fallbackPersonas = [
+            { nombre: "Santi", iniciales: "S", foto: "" },
+            { nombre: "Lucía", iniciales: "L", foto: "" },
+            { nombre: "Polito", iniciales: "MP", foto: "" }
+          ];
+          renderProfileSelection(fallbackPersonas);
+        })
+        .getPersonasConfiguracion();
+    }
+
+    function renderProfileSelection(personas) {
+      const profileSelection = document.getElementById('profile-selection');
+      const profilesGrid = document.getElementById('profiles-grid');
+      
+      if (!personas || personas.length === 0) {
+        profilesGrid.innerHTML = '<p class="profile-loading">No se encontraron perfiles configurados</p>';
+        return;
+      }
+      
+      profilesGrid.innerHTML = '';
+      
+      personas.forEach(persona => {
+        const profileCard = document.createElement('div');
+        profileCard.className = 'profile-card';
+        profileCard.onclick = () => selectProfile(persona);
+        
+        const avatarContent = persona.foto 
+          ? `<img src="${persona.foto}" alt="${persona.nombre}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+             <div class="initials" style="display: none;">${persona.iniciales}</div>`
+          : `<div class="initials">${persona.iniciales}</div>`;
+        
+        profileCard.innerHTML = `
+          <div class="profile-avatar">
+            ${avatarContent}
+          </div>
+          <h3 class="profile-name">${persona.nombre}</h3>
+        `;
+        
+        profilesGrid.appendChild(profileCard);
+      });
+    }
+
+    function selectProfile(persona) {
+      usuario = persona.nombre;
+      usuarioInfo = persona;
+      
+      // Ocultar selección de perfil y mostrar app principal
+      document.getElementById('profile-selection').style.display = 'none';
+      document.getElementById('main-app').classList.add('active');
+      
+      // Actualizar UI con información del usuario
+      updateUserWelcomeWithGroup();
+      
+      // Inicializar el resto de la aplicación
+      initMainApp();
+    }
+
+    function updateUserWelcome() {
+      const userAvatar = document.getElementById('user-avatar');
+      const welcomeName = document.getElementById('welcome-name');
+      const totalGastos = document.getElementById('total-gastos');
+      
+      if (usuarioInfo.foto) {
+        userAvatar.innerHTML = `
+          <img src="${usuarioInfo.foto}" alt="${usuarioInfo.nombre}" 
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="initials" style="display: none;">${usuarioInfo.iniciales}</div>
+        `;
+      } else {
+        userAvatar.innerHTML = `<div class="initials">${usuarioInfo.iniciales}</div>`;
+      }
+      
+      welcomeName.textContent = `¡Hola, ${usuarioInfo.nombre}!`;
+      
+      // Calcular gastos totales
+      google.script.run
+        .withSuccessHandler((gastos) => {
+          totalGastos.textContent = `Total gastado: ${gastos.toFixed(2)} €`;
+        })
+        .withFailureHandler(() => {
+          totalGastos.textContent = `Total gastado: 0.00 €`;
+        })
+        .calcularGastosTotalesPersona(usuarioInfo.nombre);
+    }
+
+    function updateUserWelcomeWithGroup() {
+      updateUserWelcome(); // Llamar la función original
+      
+      // Obtener y mostrar el grupo del usuario
+      google.script.run
+        .withSuccessHandler((grupo) => {
+          const welcomeInfo = document.querySelector('.welcome-info');
+          let grupoInfo = welcomeInfo.querySelector('.grupo-info');
+          
+          if (grupo) {
+            if (!grupoInfo) {
+              grupoInfo = document.createElement('div');
+              grupoInfo.className = 'grupo-info';
+              welcomeInfo.appendChild(grupoInfo);
+            }
+            grupoInfo.textContent = `Grupo: ${grupo.nombre}`;
+          } else {
+            if (grupoInfo) {
+              grupoInfo.remove();
+            }
+          }
+          
+          // Actualizar botones de grupos
+          updateGrupoButtons(grupo);
+        })
+        .getGrupoPersona(usuarioInfo.nombre);
+    }
+
+    function updateGrupoButtons(grupoActual) {
+      const welcomeInfo = document.querySelector('.welcome-info');
+      let grupoActions = welcomeInfo.querySelector('.grupo-actions');
+      
+      if (!grupoActions) {
+        grupoActions = document.createElement('div');
+        grupoActions.className = 'grupo-actions';
+        welcomeInfo.appendChild(grupoActions);
+      }
+      
+      grupoActions.innerHTML = '';
+      
+      const btnCrearGrupo = document.createElement('button');
+      btnCrearGrupo.className = 'btn-grupo';
+      btnCrearGrupo.textContent = 'Crear Grupo';
+      btnCrearGrupo.onclick = () => {
+        btnCrearGrupo.classList.add('loading');
+        btnCrearGrupo.textContent = 'Creando...';
+
+        mostrarModalCrearGrupo();
+
+        // cuando termine la acción, restauras el botón
+        setTimeout(() => {
+          btnCrearGrupo.classList.remove('loading');
+          btnCrearGrupo.textContent = 'Crear Grupo';
+        }, 5000); // ajusta según tu flujo real
+      };
+      //btnCrearGrupo.onclick = mostrarModalCrearGrupo;
+      
+      const btnUnirseGrupo = document.createElement('button');
+      btnUnirseGrupo.className = 'btn-grupo secondary';
+      btnUnirseGrupo.textContent = grupoActual ? 'Cambiar Grupo' : 'Unirse a Grupo';
+      btnUnirseGrupo.onclick = () => {
+        btnUnirseGrupo.classList.add('loading');
+        btnUnirseGrupo.textContent = 'Uniéndose...';
+
+        mostrarModalUnirseGrupo();
+
+        // cuando termine la acción, restauras el botón
+        setTimeout(() => {
+          btnUnirseGrupo.classList.remove('loading');
+          btnUnirseGrupo.textContent = grupoActual ? 'Cambiar Grupo' : 'Unirse a Grupo';
+        }, 5000); // ajusta según tu flujo real
+      };
+      //btnUnirseGrupo.onclick = mostrarModalUnirseGrupo;
+      
+      grupoActions.appendChild(btnCrearGrupo);
+      grupoActions.appendChild(btnUnirseGrupo);
+      
+      if (grupoActual) {
+        const btnSalirGrupo = document.createElement('button');
+        btnSalirGrupo.className = 'btn-grupo secondary';
+        btnSalirGrupo.textContent = 'Salir del Grupo';
+        btnSalirGrupo.onclick = () => {
+          btnSalirGrupo.classList.add('loading');
+          btnSalirGrupo.textContent = 'Saliendo...';
+
+          salirDelGrupo();
+
+          // cuando termine la acción, restauras el botón
+          setTimeout(() => {
+            btnSalirGrupo.classList.remove('loading');
+            btnSalirGrupo.textContent = 'Salir del Grupo';
+          }, 5000); // ajusta según tu flujo real
+        };
+        //btnSalirGrupo.onclick = salirDelGrupo;
+        grupoActions.appendChild(btnSalirGrupo);
+      }
+    }
+
+    function switchProfile() {
+      // Volver a la selección de perfil
+      document.getElementById('main-app').classList.remove('active');
+      document.getElementById('profile-selection').style.display = 'flex';
+      
+      // Limpiar datos actuales
+      usuario = "";
+      usuarioInfo = null;
+      hoja = "";
+      document.getElementById('lista').innerHTML = '';
+      
+      // Resetear selects
+      const compraButtonText = document.querySelector('#compra-select .select-button span');
+      const nombreButtonText = document.querySelector('#nombre-select .select-button span');
+      if (compraButtonText) {
+        compraButtonText.textContent = 'Elige la compra';
+        compraButtonText.classList.add('placeholder');
+      }
+      if (nombreButtonText) {
+        nombreButtonText.textContent = 'Elige tu nombre';
+        nombreButtonText.classList.add('placeholder');
+      }
+    }
+
+    function initMainApp() {
+      M.Tabs.init(document.querySelectorAll('.tabs'));
+      initCustomSelects();
+
+      // Event listener para cerrar dropdowns de grupos
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.grupos-dropdown')) {
+          document.querySelectorAll('.grupos-dropdown-content').forEach(dropdown => {
+            dropdown.classList.remove('show');
+          });
+        }
+      });
+      
+      // Cargar iniciales de las personas
+      google.script.run
+        .withSuccessHandler((iniciales) => {
+          inicialesPersonas = iniciales;
+        })
+        .getInicialesPersonas();
+      
+      // Cargar compras
+      setTimeout(() => {
+        google.script.run
+          .withSuccessHandler(renderCompras)
+          .withFailureHandler((error) => console.error('Error al cargar compras:', error))
+          .getSheetNames();
+      }, 100);
+      
+      cargarResumen();
+    }
+
+    function initCustomSelects() {
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-select')) {
+          document.querySelectorAll('.select-options').forEach(options => options.classList.remove('show'));
+          document.querySelectorAll('.select-button').forEach(btn => btn.classList.remove('active'));
+        }
+      });
+    }
+
+    function toggleSelect(selectId) {
+      const selectElement = document.getElementById(selectId);
+      const button = selectElement.querySelector('.select-button');
+
+      if (button.classList.contains('disabled')) {
+        return;
+      }
+      
+      const options = selectElement.querySelector('.select-options');
+      
+      document.querySelectorAll('.select-options').forEach(opt => {
+        if (opt !== options) opt.classList.remove('show');
+      });
+      document.querySelectorAll('.select-button').forEach(btn => {
+        if (btn !== button) btn.classList.remove('active');
+      });
+      
+      options.classList.toggle('show');
+      button.classList.toggle('active');
+    }
+
+    function selectOption(selectId, value, text) {
+      const selectElement = document.getElementById(selectId);
+      const button = selectElement.querySelector('.select-button');
+      const options = selectElement.querySelector('.select-options');
+      const buttonTextSpan = button.querySelector('span');
+      
+      buttonTextSpan.textContent = text;
+      if (buttonTextSpan.classList.contains('placeholder')) {
+        buttonTextSpan.classList.remove('placeholder');
+      }
+      
+      options.classList.remove('show');
+      button.classList.remove('active');
+      
+      options.querySelectorAll('.select-option').forEach(opt => opt.classList.remove('selected'));
+      const selectedOption = options.querySelector(`[data-value="${value}"]`);
+      if(selectedOption) selectedOption.classList.add('selected');
+      
+      if (selectId === 'compra-select') {
+        hoja = value;
+        cargar();
+      }
+    }
+
+    function renderCompras(names) {
+      const optionsContainer = document.querySelector('#compra-select .select-options');
+      const button = document.querySelector('#compra-select .select-button');
+      const placeholder = document.getElementById('compra-placeholder');
+      
+      if (!optionsContainer || !button || !placeholder) {
+        console.error('Elementos del select de compras no encontrados.');
+        return;
+      }
+      
+      optionsContainer.innerHTML = "";
+      
+      if (!names || names.length === 0) {
+        placeholder.textContent = "No hay compras";
+      } else {
+        names.forEach(name => {
+          const option = document.createElement("div");
+          option.className = "select-option";
+          option.setAttribute('data-value', name);
+          option.textContent = name;
+          option.onclick = () => selectOption('compra-select', name, name);
+          optionsContainer.appendChild(option);
+        });
+        
+        button.classList.remove('disabled');
+        placeholder.textContent = 'Elige la compra';
+        placeholder.classList.add('placeholder');
+      }
+      
+      // Añadir botón para nueva compra
+      if (!document.getElementById('btn-nueva-compra')) {
+        const btnNuevaCompra = document.createElement('button');
+        btnNuevaCompra.id = 'btn-nueva-compra';
+        btnNuevaCompra.className = 'btn-action';
+        btnNuevaCompra.innerHTML = '<i class="material-icons">add</i>Nueva Compra';
+        btnNuevaCompra.onclick = function() {
+          this.classList.add('loading');
+          this.innerHTML = '<i class="material-icons">hourglass_empty</i>Cargando...';
+          
+          setTimeout(() => {
+            mostrarModalNuevaCompra();
+            this.classList.remove('loading');
+            this.innerHTML = '<i class="material-icons">add</i>Nueva Compra';
+          }, 5000);
+        };
+        
+        const selectContainer = document.querySelector('#compra-select').parentElement;
+        selectContainer.appendChild(btnNuevaCompra);
+      }
+    }
+
+    function cargar() {
+      const cont = document.getElementById("lista");
+      if (usuario && hoja) {
+        cont.innerHTML = `
+          <div class="loading">
+            <div class="preloader-wrapper small active">
+              <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left"><div class="circle"></div></div>
+                <div class="gap-patch"><div class="circle"></div></div>
+                <div class="circle-clipper right"><div class="circle"></div></div>
+              </div>
+            </div>
+            <div>Cargando productos...</div>
+          </div>
+        `;
+        google.script.run.withSuccessHandler(renderLista).getData(usuario, hoja);
+      } else {
+        cont.innerHTML = "";
+      }
+    }
+
+    function renderLista(items) {
+      const cont = document.getElementById("lista");
+      cont.innerHTML = "";
+
+      if (items.length === 0) {
+        cont.innerHTML = `
+          <div class="empty-state">
+            <i class="material-icons">shopping_cart</i>
+            <h6>No hay productos en esta compra</h6>
+            <p>Selecciona otra compra o añade productos en la hoja de cálculo.</p>
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "product-item";
+        
+        // Crear badges de otras personas que tienen el producto
+        let personBadges = '';
+        if (item.otrasPersonas && item.otrasPersonas.length > 0) {
+          personBadges = `
+            <div class="person-badges">
+              ${item.otrasPersonas.map((persona, index) => {
+                const hasPhoto = persona.foto && persona.foto.trim() !== '';
+                const photoContent = hasPhoto 
+                  ? `<img src="${persona.foto}" alt="${persona.nombreCompleto}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                     <span class="initials" style="display: none;">${persona.iniciales}</span>`
+                  : `<span class="initials">${persona.iniciales}</span>`;
+                
+                return `<span class="person-badge ${hasPhoto ? 'has-photo' : ''}" 
+                              title="Lo tiene ${persona.nombreCompleto}">
+                          ${photoContent}
+                        </span>`;
+              }).join('')}
+            </div>
+          `;
+        }
+
+        div.innerHTML = `
+          <label style="display: flex; align-items: center; cursor: pointer; width: 100%;">
+            <input type="checkbox" class="filled-in" ${item.checked ? 'checked' : ''} />
+            <span></span>
+            <div class="product-info">
+              <div class="product-name">
+                <span>${item.producto}</span>
+                ${personBadges}
+              </div>
+              <div class="product-price">${parseFloat(item.subtotal).toFixed(2)} €</div>
+            </div>
+          </label>
+        `;
+        const chk = div.querySelector('input[type="checkbox"]');
+        chk.onchange = () => {
+          google.script.run.withSuccessHandler(() => {
+            setTimeout(cargarResumen, 300);
+            setTimeout(updateUserWelcome, 500); // Actualizar gastos totales
+          }).updateData(usuario, item.producto, chk.checked, hoja);
+        };
+        cont.appendChild(div);
+      });
+    }
+
+    function cargarResumen() {
+      document.getElementById("resumen-content").innerHTML = `
+        <div class="loading">
+          <div class="preloader-wrapper small active">
+            <div class="spinner-layer spinner-green-only">
+              <div class="circle-clipper left"><div class="circle"></div></div>
+              <div class="gap-patch"><div class="circle"></div></div>
+              <div class="circle-clipper right"><div class="circle"></div></div>
+            </div>
+          </div>
+          <br>Cargando resumen...
+        </div>`;
+      google.script.run.withSuccessHandler(renderResumen).getResumenData();
+    }
+
+    function renderResumen(data) {
+      const cont = document.getElementById("resumen-content");
+      
+      cont.innerHTML = `
+        <div class="resumen-actions">
+          <button class="btn-action" onclick="actualizarResumen()">
+            <i class="material-icons">refresh</i>Actualizar Resumen
+          </button>
+        </div>
+      `;
+
+      if (!data || data.length === 0) {
+        /*cont.innerHTML = `
+          <div class="resumen-actions">
+            <button class="btn-action" onclick="actualizarResumen()">
+              <i class="material-icons">refresh</i>Actualizar Resumen
+            </button>
+          </div>
+        `;*/
+        return;
+      }
+      
+      // Separar los totales de las personas
+      const personas = data.filter(item => item.persona !== "__TOTAL__");
+      const totales = data.filter(item => item.persona === "__TOTAL__");
+      
+      // Crear un mapa de totales por compra
+      const totalesPorCompra = {};
+      totales.forEach(item => {
+        totalesPorCompra[item.compra] = item.total;
+      });
+      
+      // Agrupar personas por compra
+      const compras = personas.reduce((acc, item) => {
+        acc[item.compra] = acc[item.compra] || [];
+        acc[item.compra].push(item);
+        return acc;
+      }, {});
+
+      cont.innerHTML = `
+        <div class="resumen-actions">
+          <button class="btn-action" onclick="actualizarResumen()">
+            <i class="material-icons">refresh</i>Actualizar Resumen
+          </button>
+        </div>
+      `;
+      
+      Object.keys(compras).forEach(compra => {
+        const compraData = compras[compra];
+        const totalCompra = totalesPorCompra[compra] || 0;
+        
+        // Solo mostrar personas con gastos > 0
+        //console.log("a")
+        //console.log(compraData.map(x => [x.persona, x.total]));
+        const personasConGastos = compraData.filter(item => item.total > 0);
+        //console.log(compraData.map(x => [x.persona, x.total]));
+        //console.log("b")
+
+        if (personasConGastos.length === 0) return; // Skip compras sin gastos
+        
+        const maxAmount = Math.max(...personasConGastos.map(item => item.total), 0);
+
+        const compraDiv = document.createElement("div");
+        compraDiv.className = "resume-item";
+        compraDiv.onclick = () => toggleResumeItem(compraDiv);
+        
+        let barsHtml = '';
+        personasConGastos
+          .sort((a, b) => b.total - a.total)
+          .forEach(item => {
+            const percentage = maxAmount > 0 ? (item.total / maxAmount) * 100 : 0;
+            barsHtml += `
+              <div class="person-bar">
+                <div class="person-info">
+                  <span class="person-name">${item.persona}</span>
+                  <span class="person-amount">${item.total.toFixed(2)} €</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: ${percentage}%"></div>
+                </div>
+              </div>
+            `;
+          });
+        
+        compraDiv.innerHTML = `
+          <div class="resume-header">
+            <div class="resume-title">
+              <i class="material-icons">receipt</i>${compra}
+            </div>
+            <div class="resume-total">
+              Total: ${totalCompra.toFixed(2)} €
+              <i class="material-icons expand-icon">expand_more</i>
+            </div>
+          </div>
+          <div class="resume-details">
+            ${barsHtml}
+          </div>
+        `;
+        cont.appendChild(compraDiv);
+      });
+    }
+
+    function toggleResumeItem(element) {
+      // Evitar que se ejecute si se hace clic en el área de detalles
+      if (event.target.closest('.resume-details')) return;
+      
+      element.classList.toggle('expanded');
+    }
+
+    // === FUNCIONES PARA GESTIÓN DE GRUPOS ===
+
+    function mostrarModalCrearGrupo() {
+      // Obtener personas disponibles
+      google.script.run
+        .withSuccessHandler((personas) => {
+          const modalHtml = `
+            <div class="modal-overlay" id="modal-crear-grupo">
+              <div class="modal-content">
+                <h3 class="modal-title">Crear Nuevo Grupo</h3>
+                <form id="form-crear-grupo">
+                  <div class="form-group">
+                    <label for="nombre-grupo">Nombre del grupo:</label>
+                    <input type="text" id="nombre-grupo" required maxlength="50" placeholder="Ej: Grupo Abeliano">
+                  </div>
+                  <div class="form-group">
+                    <label>Seleccionar miembros:</label>
+                    <div class="checkbox-group" id="miembros-grupo">
+                      ${personas.map(persona => `
+                        <div class="checkbox-item">
+                          <label style="display: flex; align-items: center; cursor: pointer; width: 100%;">
+                            <input type="checkbox" class="filled-in" value="${persona.nombre}" />
+                            <span></span>
+                            <span style="margin-left: 0.5rem;">${persona.nombre}</span>
+                          </label>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                  <div class="modal-buttons">
+                    <button type="button" class="btn-modal btn-secondary" onclick="cerrarModal('modal-crear-grupo')">Cancelar</button>
+                    <button type="submit" class="btn-modal btn-primary">Crear Grupo</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          `;
+
+          
+          document.body.insertAdjacentHTML('beforeend', modalHtml);
+          
+          document.getElementById('form-crear-grupo').onsubmit = function(e) {
+            e.preventDefault();
+            crearGrupo();
+          };
+        })
+        .getPersonasConfiguracion();
+    }
+
+    function mostrarModalUnirseGrupo() {
+      google.script.run
+        .withSuccessHandler((grupos) => {
+          if (grupos.length === 0) {
+            alert('No hay grupos disponibles. Crea uno primero.');
+            return;
+          }
+          
+          const modalHtml = `
+            <div class="modal-overlay" id="modal-unirse-grupo">
+              <div class="modal-content">
+                <h3 class="modal-title">Unirse a un Grupo</h3>
+                <div class="grupos-list" id="grupos-disponibles">
+                  ${grupos.map(grupo => `
+                    <div class="grupo-item" data-id="${grupo.id}">
+                      <h4>${grupo.nombre}</h4>
+                      <div class="grupo-miembros">
+                        Miembros: ${grupo.miembros.length > 0 ? grupo.miembros.join(', ') : 'Sin miembros'}
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+                <div class="modal-buttons">
+                  <button type="button" class="btn-modal btn-secondary" onclick="cerrarModal('modal-unirse-grupo')">Cancelar</button>
+                  <button type="button" class="btn-modal btn-primary" id="btn-confirmar-union" disabled>Unirse</button>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          document.body.insertAdjacentHTML('beforeend', modalHtml);
+          
+          // Manejar selección de grupo
+          let grupoSeleccionado = null;
+          document.querySelectorAll('.grupo-item').forEach(item => {
+            item.onclick = function() {
+              document.querySelectorAll('.grupo-item').forEach(i => i.classList.remove('selected'));
+              this.classList.add('selected');
+              grupoSeleccionado = this.getAttribute('data-id');
+              document.getElementById('btn-confirmar-union').disabled = false;
+            };
+          });
+          
+          document.getElementById('btn-confirmar-union').onclick = function() {
+            if (grupoSeleccionado) {
+              const btnUnion = this;
+              btnUnion.classList.add('loading');
+              btnUnion.textContent = 'Uniendo...';
+
+              unirseAGrupo(grupoSeleccionado, btnUnion);
+            }
+          };
+
+        })
+        .getGrupos();
+    }
+
+    function crearGrupo() {
+      const nombreGrupo = document.getElementById('nombre-grupo').value.trim();
+      const miembrosSeleccionados = Array.from(document.querySelectorAll('#miembros-grupo input:checked'))
+        .map(input => input.value);
+
+      if (!nombreGrupo) {
+        alert('Por favor, introduce un nombre para el grupo.');
+        return;
+      }
+
+      const btnSubmit = document.querySelector('#form-crear-grupo .btn-primary');
+      btnSubmit.classList.add('loading');
+      btnSubmit.textContent = 'Creando...';
+
+      google.script.run
+        .withSuccessHandler((resultado) => {
+          btnSubmit.classList.remove('loading');
+          btnSubmit.textContent = 'Crear Grupo';
+
+          if (resultado.success) {
+            alert(resultado.message);
+            cerrarModal('modal-crear-grupo');
+            updateUserWelcomeWithGroup();
+          } else {
+            alert('Error: ' + resultado.message);
+          }
+        })
+        .crearGrupo(nombreGrupo, miembrosSeleccionados);
+    }
+
+
+    function unirseAGrupo(idGrupo) {
+      google.script.run
+        .withSuccessHandler((resultado) => {
+          if (resultado.success) {
+            alert(resultado.message);
+            cerrarModal('modal-unirse-grupo');
+            updateUserWelcomeWithGroup(); // Actualizar UI
+          } else {
+            alert('Error: ' + resultado.message);
+          }
+        })
+        .unirseAGrupo(usuarioInfo.nombre, idGrupo);
+    }
+
+    function salirDelGrupo() {
+      if (confirm('¿Estás seguro de que quieres salir de tu grupo actual?')) {
+        google.script.run
+          .withSuccessHandler((resultado) => {
+            if (resultado.success) {
+              alert(resultado.message);
+              updateUserWelcomeWithGroup(); // Actualizar UI
+            } else {
+              alert('Error: ' + resultado.message);
+            }
+          })
+          .salirDeGrupo(usuarioInfo.nombre);
+      }
+    }
+
+    function cerrarModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.remove();
+      }
+    }
+
+    // === FUNCIONES PARA ACTUALIZAR RESUMEN ===
+    function actualizarResumen() {
+      const btnActualizar = event.target;
+      btnActualizar.classList.add('loading');
+      btnActualizar.innerHTML = '<i class="material-icons">sync</i>Actualizando...';
+      
+      google.script.run
+        .withSuccessHandler((resultado) => {
+          btnActualizar.classList.remove('loading');
+          btnActualizar.innerHTML = '<i class="material-icons">refresh</i>Actualizar Resumen';
+          
+          if (resultado.success) {
+            alert(resultado.message);
+            setTimeout(cargarResumen, 500);
+          } else {
+            alert('Error: ' + resultado.message);
+          }
+        })
+        .actualizarResumenDesdeApp();
+    }
+
+    // === FUNCIONES PARA CREAR NUEVA COMPRA ===
+    let productosCompra = [];
+
+    function mostrarModalNuevaCompra() {
+      google.script.run
+        .withSuccessHandler((personas) => {
+          const modalHtml = `
+            <div class="modal-overlay" id="modal-nueva-compra" style="z-index: 10001;">
+              <div class="modal-content" style="width: 95%; max-width: 700px; max-height: 90vh; overflow-y: auto;">
+                <h3 class="modal-title">Nueva Compra</h3>
+                <form id="form-nueva-compra">
+                  <div class="form-group">
+                    <label for="nombre-compra">Nombre de la compra:</label>
+                    <input type="text" id="nombre-compra" required maxlength="50" placeholder="Ej: Mercadona_Enero_2025">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>Productos:</label>
+                    <div class="productos-lista" id="productos-lista">
+                      <!-- Los productos se añadirán aquí dinámicamente -->
+                    </div>
+                    <button type="button" class="btn-action" onclick="añadirProducto()">
+                      <i class="material-icons">add</i>Añadir Producto
+                    </button>
+                  </div>
+                  
+                  <div class="total-compra" id="total-compra">
+                    Total: 0.00 €
+                  </div>
+                  
+                  <div class="asignaciones-container" id="asignaciones-container">
+                    <h4 style="color: #2c3e50; margin-bottom: 1rem;">Asignar productos a personas:</h4>
+                    <div id="productos-asignaciones">
+                      <!-- Las asignaciones se mostrarán aquí -->
+                    </div>
+                  </div>
+                  
+                  <div class="modal-buttons">
+                    <button type="button" class="btn-modal btn-secondary" onclick="cerrarModalNuevaCompra()">Cancelar</button>
+                    <button type="submit" class="btn-modal btn-primary">Crear Compra</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          `;
+          
+          document.body.insertAdjacentHTML('beforeend', modalHtml);
+          
+          // Inicializar
+          productosCompra = [];
+          añadirProducto(); // Añadir un producto por defecto
+          
+          document.getElementById('form-nueva-compra').onsubmit = function(e) {
+            e.preventDefault();
+            crearNuevaCompra();
+          };
+        })
+        .getPersonasConfiguracion();
+    }
+
+    function selectPagador(nombre) {
+      const button = document.querySelector('#pagador-select .select-button span');
+      button.textContent = nombre;
+      button.classList.remove('placeholder');
+      button.setAttribute('data-value', nombre);
+      
+      document.querySelector('#pagador-select .select-options').classList.remove('show');
+      document.querySelector('#pagador-select .select-button').classList.remove('active');
+    }
+
+    function añadirProducto() {
+      const index = productosCompra.length;
+      productosCompra.push({ nombre: '', precio: 0, guardado: false });
+      
+      renderizarProductos();
+    }
+
+    function actualizarProducto(index, campo, valor) {
+      if (productosCompra[index]) {
+        productosCompra[index][campo] = valor;
+        productosCompra[index].guardado = false; // Marcar como no guardado al editar
+        if (campo === 'precio') {
+          actualizarTotalCompra();
+        }
+      }
+    }
+
+    function actualizarPrecio(index, valor) {
+      if (productosCompra[index]) {
+        // Permitir operaciones matemáticas simples
+        try {
+          // Reemplazar comas por puntos y evaluar expresiones matemáticas simples
+          const expression = valor.replace(/,/g, '.').replace(/[^0-9+\-*/.() ]/g, '');
+          if (expression && expression !== '') {
+            const result = Function('"use strict"; return (' + expression + ')')();
+            if (!isNaN(result) && isFinite(result)) {
+              productosCompra[index].precio = Math.max(0, result);
+              event.target.style.borderColor = '#ddd';
+            } else {
+              event.target.style.borderColor = '#dc3545';
+              productosCompra[index].precio = 0;
+            }
+          } else {
+            productosCompra[index].precio = 0;
+            event.target.style.borderColor = '#ddd';
+          }
+        } catch (e) {
+          event.target.style.borderColor = '#dc3545';
+          productosCompra[index].precio = 0;
+        }
+        actualizarTotalCompra();
+      }
+    }
+
+    function eliminarProducto(index) {
+      productosCompra.splice(index, 1);
+      renderizarProductos();
+      renderizarAsignaciones();
+      actualizarTotalCompra();
+    }
+
+    function renderizarProductos() {
+      const productosLista = document.getElementById('productos-lista');
+      productosLista.innerHTML = '';
+      
+      productosCompra.forEach((producto, index) => {
+        const productoDiv = document.createElement('div');
+        productoDiv.className = `producto-item-form ${producto.guardado ? 'producto-saved' : ''}`;
+        
+        if (producto.guardado) {
+          // Producto guardado - solo mostrar información
+          productoDiv.innerHTML = `
+            <div style="flex: 2; display: flex; align-items: center;">
+              <strong>${producto.nombre}</strong>
+            </div>
+            <div style="flex: 1; text-align: right; color: #087C45; font-weight: 600;">
+              ${producto.precio.toFixed(2)} €
+            </div>
+            <div class="producto-buttons">
+              <button type="button" class="btn-edit-producto" onclick="editarProducto(${index})">Editar</button>
+              <button type="button" class="btn-remove" onclick="eliminarProducto(${index})" title="Eliminar">×</button>
+            </div>
+          `;
+        } else {
+          // Producto en edición
+          productoDiv.innerHTML = `
+            <input type="text" class="producto-input" placeholder="Nombre del producto" 
+                  value="${producto.nombre}" oninput="actualizarProducto(${index}, 'nombre', this.value)">
+            <input type="text" class="precio-input" placeholder="0.00" 
+                  value="${producto.precio || ''}" oninput="actualizarPrecio(${index}, this.value)">
+            <div class="producto-buttons">
+              <button type="button" class="btn-save-producto" onclick="guardarProducto(${index})" 
+                      ${!producto.nombre || !producto.precio ? 'disabled' : ''}>Guardar</button>
+              <button type="button" class="btn-remove" onclick="eliminarProducto(${index})" title="Eliminar">×</button>
+            </div>
+          `;
+        }
+        productosLista.appendChild(productoDiv);
+      });
+    }
+
+    function actualizarTotalCompra() {
+      const total = productosCompra.reduce((sum, producto) => sum + (producto.precio || 0), 0);
+      document.getElementById('total-compra').textContent = `Total: ${total.toFixed(2)} €`;
+    }
+
+    function crearNuevaCompra() {
+      const nombreCompra = document.getElementById('nombre-compra').value.trim();
+      
+      if (!nombreCompra) {
+        alert('Por favor, introduce un nombre para la compra.');
+        return;
+      }
+      
+      const productosGuardados = productosCompra.filter(p => p.guardado && p.nombre && p.precio > 0);
+      
+      if (productosGuardados.length === 0) {
+        alert('Por favor, guarda al menos un producto antes de crear la compra.');
+        return;
+      }
+      
+      // Verificar que al menos un producto tenga asignaciones
+      const tieneAsignaciones = productosGuardados.some(p => p.asignaciones && p.asignaciones.length > 0);
+      
+      if (!tieneAsignaciones) {
+        if (!confirm('Ningún producto tiene personas asignadas. ¿Quieres crear la compra de todas formas? Podrás asignar las personas después en la aplicación.')) {
+          return;
+        }
+      }
+      
+      const btnSubmit = document.querySelector('#form-nueva-compra .btn-primary');
+      btnSubmit.classList.add('loading');
+      btnSubmit.textContent = 'Creando...';
+      
+      // Preparar asignaciones
+      const asignaciones = productosGuardados.map(p => p.asignaciones || []);
+      
+      google.script.run
+        .withSuccessHandler((resultado) => {
+          btnSubmit.classList.remove('loading');
+          btnSubmit.textContent = 'Crear Compra';
+          
+          if (resultado.success) {
+            alert(resultado.message);
+            cerrarModalNuevaCompra();
+            actualizarResumen()
+            // Actualizar lista de compras
+            setTimeout(() => {
+              google.script.run
+                .withSuccessHandler(renderCompras)
+                .getSheetNames();
+            }, 500);
+          } else {
+            alert('Error: ' + resultado.message);
+          }
+        })
+        .crearCompraDesdeApp(nombreCompra, productosGuardados, asignaciones);
+    }
+
+    function cerrarModalNuevaCompra() {
+      const modal = document.getElementById('modal-nueva-compra');
+      if (modal) {
+        modal.remove();
+      }
+      productosCompra = [];
+    }
+
+    function guardarProducto(index) {
+      const producto = productosCompra[index];
+      if (producto.nombre && producto.precio > 0) {
+        producto.guardado = true;
+        renderizarProductos();
+        renderizarAsignaciones();
+        actualizarTotalCompra();
+      }
+    }
+
+    function editarProducto(index) {
+      productosCompra[index].guardado = false;
+      renderizarProductos();
+    }
+
+    function seleccionarTodos(productoIndex) {
+      google.script.run
+        .withSuccessHandler((personas) => {
+          personas.forEach(persona => {
+            const checkbox = document.querySelector(`input[data-producto="${productoIndex}"][data-persona="${persona.nombre}"]`);
+            if (checkbox) {
+              checkbox.checked = true;
+              actualizarAsignacion(productoIndex, persona.nombre, true);
+            }
+          });
+        })
+        .getPersonasConfiguracion();
+    }
+
+    function deseleccionarTodos(productoIndex) {
+      document.querySelectorAll(`input[data-producto="${productoIndex}"]`).forEach(checkbox => {
+        const persona = checkbox.getAttribute('data-persona');
+        checkbox.checked = false;
+        actualizarAsignacion(productoIndex, persona, false);
+      });
+    }
+
+    function seleccionarGrupo(productoIndex, grupoId) {
+      google.script.run
+        .withSuccessHandler((grupos) => {
+          const grupo = grupos.find(g => g.id === grupoId);
+          if (grupo) {
+            // Primero deseleccionar todos
+            deseleccionarTodos(productoIndex);
+            
+            // Luego seleccionar miembros del grupo
+            grupo.miembros.forEach(miembro => {
+              const checkbox = document.querySelector(`input[data-producto="${productoIndex}"][data-persona="${miembro}"]`);
+              if (checkbox) {
+                checkbox.checked = true;
+                actualizarAsignacion(productoIndex, miembro, true);
+              }
+            });
+          }
+          
+          // Cerrar dropdown
+          document.querySelectorAll('.grupos-dropdown-content').forEach(dropdown => {
+            dropdown.classList.remove('show');
+          });
+        })
+        .getGrupos();
+    }
+
+    function toggleGruposDropdown(productoIndex) {
+      const dropdown = document.getElementById(`grupos-dropdown-${productoIndex}`);
+      if (dropdown) {
+        dropdown.classList.toggle('show');
+        
+        // Cerrar otros dropdowns
+        document.querySelectorAll('.grupos-dropdown-content').forEach(d => {
+          if (d !== dropdown) d.classList.remove('show');
+        });
+      }
+    }
+
+    function renderizarAsignaciones() {
+      const container = document.getElementById('productos-asignaciones');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      const productosGuardados = productosCompra.filter(p => p.guardado);
+      
+      if (productosGuardados.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">Guarda productos para poder asignarlos</p>';
+        return;
+      }
+      
+      Promise.all([
+        new Promise(resolve => {
+          google.script.run
+            .withSuccessHandler(resolve)
+            .getPersonasConfiguracion();
+        }),
+        new Promise(resolve => {
+          google.script.run
+            .withSuccessHandler(resolve)
+            .getGrupos();
+        })
+      ]).then(([personas, grupos]) => {
+        productosGuardados.forEach((producto, realIndex) => {
+          const originalIndex = productosCompra.indexOf(producto);
+          
+          const productoDiv = document.createElement('div');
+          productoDiv.className = 'producto-asignacion';
+          
+          // Crear dropdown de grupos
+          const gruposDropdownHtml = grupos.length > 0 ? `
+            <div class="grupos-dropdown">
+              <button type="button" class="btn-select-all secondary" onclick="toggleGruposDropdown(${originalIndex})">
+                Grupos ▼
+              </button>
+              <div class="grupos-dropdown-content" id="grupos-dropdown-${originalIndex}">
+                ${grupos.map(grupo => `
+                  <div class="grupo-dropdown-item" onclick="seleccionarGrupo(${originalIndex}, '${grupo.id}')">
+                    ${grupo.nombre}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : '';
+          
+          const checkboxesHtml = personas.map(persona => `
+            <div class="checkbox-persona">
+              <label style="display: flex; align-items: center; cursor: pointer; width: 100%;">
+                <input type="checkbox" class="filled-in" 
+                      data-producto="${originalIndex}" 
+                      data-persona="${persona.nombre}"
+                      onchange="actualizarAsignacion(${originalIndex}, '${persona.nombre}', this.checked)" 
+                      ${producto.asignaciones && producto.asignaciones.includes(persona.nombre) ? 'checked' : ''} />
+                <span></span>
+                <span style="margin-left: 0.5rem;">${persona.nombre}</span>
+              </label>
+            </div>
+          `).join('');
+          
+          productoDiv.innerHTML = `
+            <div class="producto-nombre-precio">
+              <span class="producto-nombre-asign">${producto.nombre}</span>
+              <span class="producto-precio-asign">${producto.precio.toFixed(2)} €</span>
+            </div>
+            <div class="personas-selection-header">
+              <h5>Seleccionar personas:</h5>
+              <div class="selection-buttons">
+                <button type="button" class="btn-select-all" onclick="seleccionarTodos(${originalIndex})">
+                  Todos
+                </button>
+                <button type="button" class="btn-select-all secondary" onclick="deseleccionarTodos(${originalIndex})">
+                  Ninguno
+                </button>
+                ${gruposDropdownHtml}
+              </div>
+            </div>
+            <div class="personas-checkboxes">
+              ${checkboxesHtml}
+            </div>
+          `;
+          
+          container.appendChild(productoDiv);
+        });
+      }).catch(error => {
+        console.error('Error cargando datos para asignaciones:', error);
+        container.innerHTML = '<p style="text-align: center; color: #dc3545; font-style: italic;">Error cargando datos</p>';
+      });
+    }
+
+    function actualizarAsignacion(productoIndex, persona, checked) {
+      if (!productosCompra[productoIndex].asignaciones) {
+        productosCompra[productoIndex].asignaciones = [];
+      }
+      
+      if (checked) {
+        if (!productosCompra[productoIndex].asignaciones.includes(persona)) {
+          productosCompra[productoIndex].asignaciones.push(persona);
+        }
+      } else {
+        productosCompra[productoIndex].asignaciones = productosCompra[productoIndex].asignaciones.filter(p => p !== persona);
+      }
+    }
+
+    window.onload = init;
+  </script>
+</head>
+<body>
+  <!-- PANTALLA DE SELECCIÓN DE PERFIL -->
+  <div id="profile-selection" class="profile-selection">
+    <div class="profile-selection-content">
+      <h2>¿Quién está usando la app?</h2>
+      <div id="profiles-grid" class="profiles-grid">
+        <p class="profile-loading">Cargando perfiles...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- APLICACIÓN PRINCIPAL -->
+  <div id="main-app" class="main-app">
+    <div class="container">
+      <div class="header">
+        <div class="profile-switch" onclick="switchProfile()" title="Cambiar perfil">
+          <i class="material-icons">person_outline</i>
+        </div>
+        
+        <div class="welcome-section">
+          <div id="user-avatar" class="user-avatar">
+            <div class="initials">U</div>
+          </div>
+          <div class="welcome-info">
+            <h4 id="welcome-name">¡Hola, Usuario!</h4>
+            <p id="total-gastos" class="total-gastos">Total gastado: 0.00 €</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <ul class="tabs">
+          <li class="tab col s6"><a href="#compras-tab" class="active">Mis Compras</a></li>
+          <li class="tab col s6"><a href="#resumen-tab">Resumen</a></li>
+        </ul>
+
+        <div id="compras-tab">
+          <div class="card-content">
+            <div class="card-title">
+              <i class="material-icons">shopping_basket</i>
+              <span>Selecciona tus compras</span>
+            </div>
+
+            <div class="select-container">
+              <label class="select-label">Selecciona la compra</label>
+              <div class="custom-select" id="compra-select">
+                <div class="select-button disabled" onclick="toggleSelect('compra-select')">
+                  <span id="compra-placeholder">Cargando compras...</span>
+                  <div class="select-arrow"></div>
+                </div>
+                <div class="select-options"></div>
+              </div>
+            </div>
+
+            <div id="lista"></div>
+          </div>
+        </div>
+
+        <div id="resumen-tab">
+          <div class="card-content">
+            <div class="card-title">
+              <i class="material-icons">assessment</i>
+              <span>Resumen por compras</span>
+            </div>
+            <div id="resumen-content"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
